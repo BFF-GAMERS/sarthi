@@ -1,0 +1,278 @@
+/* Evolution Engine: nav styles. Structure only; no colours or theme (theme is independent of evolution).
+   The hydration gate for [data-evo-region] is owned by the home/ui lane. */
+
+/* Primary destinations at the top of the drawer (phone): large labels, no purpose lines. */
+.evo-nav-primary .evo-nav-purpose {
+  display: none;
+}
+.evo-nav-primary .evo-nav-label {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.evo-nav-primary [aria-current="page"] .evo-nav-label {
+  color: var(--color-saffron-500);
+}
+
+/* Lab before/after: mark what changed without touching colour tokens. */
+[data-nav-item][data-highlight="true"] {
+  border-radius: 9999px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  outline: 1.5px solid color-mix(in srgb, currentColor 35%, transparent);
+  outline-offset: 1px;
+}
+
+/* /explore: cards keep a comfortable touch target. */
+.evo-nav-card {
+  min-height: 4.5rem;
+}
+
+/* Laptop Explore/More dropdown: many destinations, so labels only (purposes live in the drawer and /explore). */
+.evo-nav-compact .evo-nav-purpose {
+  display: none;
+}
+.evo-nav-compact a {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+/* ═══ Header fit (nav-chip-theme lane) ═══════════════════════════════════════════════════════════════
+   The island is 1200 px wide from 1280 px up (.container-x), so what fits is a pure function of the
+   viewport. nav-model.ts `navFit` proves it per evolved state; these thresholds are the same ones
+   (NAV_BREAKPOINTS): 1024 links appear, 1280 (xl) full labels, 1500 language name. Change them together. */
+
+/* Auth buttons never wrap or shrink. */
+.nav-island .nvx-login,
+.nav-island .btn-primary {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* "More" is a label + chevron from xl and a single icon when the island is tight. */
+.nav-island .nvx-more-dots {
+  display: none;
+}
+@media (max-width: 1279.98px) {
+  .nav-island .nvx-more {
+    width: 2.75rem;
+    padding-inline: 0;
+    justify-content: center;
+  }
+  .nav-island .nvx-more .nvx-more-label,
+  .nav-island .nvx-more .nvx-more-chev {
+    display: none;
+  }
+  .nav-island .nvx-more .nvx-more-dots {
+    display: block;
+  }
+}
+
+/* 1024-1279 px: the island is tight, so four things step back to where they are already one tap away
+   (menu drawer, /auth, avatar menu, Explore). Nothing is removed from the product. */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  .nav-island .nvx-mode-quick,
+  .nav-island .nvx-login,
+  .nav-island .nvx-msg,
+  .nav-island .nvx-uname {
+    display: none;
+  }
+}
+
+/* Language: a 44 px globe in the island, with the name beside it from 1500 px. The select stays the control. */
+.nvx-lang[data-surface="nav"] {
+  min-height: 2.75rem;
+}
+@media (max-width: 1499.98px) {
+  .nvx-lang[data-surface="nav"] {
+    width: 2.75rem;
+    justify-content: center;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+  }
+  .nvx-lang[data-surface="nav"]:hover {
+    background: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  }
+  .nvx-lang[data-surface="nav"]:focus-within {
+    outline: 2px solid var(--color-saffron-500);
+    outline-offset: 1px;
+  }
+  .nvx-lang[data-surface="nav"] .nvx-lang-globe {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .nvx-lang[data-surface="nav"] select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+/* ═══ The "Your Swayam" status dot ════════════════════════════════════════════════════════════════════
+   One 44 x 44 px button around a 14 px mark, no text, at every width (the label used to eat the room
+   "Log in / Join free" needs). Theme tokens only, so light and dark both work:
+     learning = hollow green ring        adapted = filled gold + check      kept = filled gold + lock
+     paused   = ring + two bars (grey)   off     = dashed ring + slash (grey)
+   The shape differs per state, so colour is never the only cue. The mark itself is AdaptingPulse's dot
+   (restyled here), which supplies the one-burst pulse and the reduced-motion fade. */
+.evo-dot {
+  --dot: var(--color-emeraldx-500);
+  --dot-on: var(--color-on-accent);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--dot);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.2s var(--ease-quick);
+}
+.evo-dot:hover {
+  background: color-mix(in srgb, var(--color-ink) 7%, transparent);
+}
+.evo-dot[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
+}
+.evo-dot[data-tone="adapted"],
+.evo-dot[data-tone="kept"] {
+  --dot: var(--color-marigold);
+}
+.evo-dot[data-tone="paused"] {
+  --dot: var(--color-ink-soft);
+}
+.evo-dot[data-tone="off"] {
+  --dot: var(--color-ink-mute);
+}
+/* AdaptingPulse's root: exactly the mark's size, so the glyph can sit on top of its dot. */
+.evo-dot .evo-dot-pulse {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  line-height: 0;
+  color: var(--dot);
+}
+.evo-dot .evo-dot-glyph {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: var(--dot-on);
+}
+.evo-dot[data-tone="paused"] .evo-dot-glyph,
+.evo-dot[data-tone="off"] .evo-dot-glyph {
+  color: var(--dot);
+}
+/* Hollow shapes: AdaptingPulse draws a filled disc (bg-current); these tones turn it into a ring. */
+.evo-dot[data-tone="learning"] .evo-dot-pulse > [aria-hidden] > .block,
+.evo-dot[data-tone="paused"] .evo-dot-pulse > [aria-hidden] > .block {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--dot);
+}
+.evo-dot[data-tone="off"] .evo-dot-pulse > [aria-hidden] > .block {
+  background: transparent;
+  border: 2px dashed var(--dot);
+}
+[data-motion="reduced"] .evo-dot {
+  transition: none;
+}
+@media (forced-colors: active) {
+  .evo-dot[data-tone="adapted"] .evo-dot-pulse > [aria-hidden] > .block,
+  .evo-dot[data-tone="kept"] .evo-dot-pulse > [aria-hidden] > .block {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+  .evo-dot .evo-dot-glyph {
+    color: Canvas;
+  }
+  .evo-dot[data-tone="paused"] .evo-dot-glyph,
+  .evo-dot[data-tone="off"] .evo-dot-glyph {
+    color: CanvasText;
+  }
+}
+
+/* ═══ Light / Dark / System ═══════════════════════════════════════════════════════════════════════════ */
+.nvx-theme {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--color-ink-line);
+  border-radius: 9999px;
+  background: var(--color-paper-light);
+  max-width: 100%;
+}
+.nvx-theme button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding-inline: 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.nvx-theme button:hover {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 7%, transparent);
+}
+.nvx-theme button[data-on="true"] {
+  background: var(--color-ink);
+  color: var(--color-paper-light);
+}
+.nvx-theme button:focus-visible {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+[data-motion="reduced"] .nvx-theme button,
+[data-motion="reduced"] .nvx-lang {
+  transition: none;
+}
+@media (max-width: 380px) {
+  .nvx-theme button {
+    padding-inline: 0.625rem;
+  }
+}
+
+/* ═══ Touch targets ═══════════════════════════════════════════════════════════════════════════════════ */
+/* Bottom bar: five equal slots, each at least 44 px both ways, never wider than the screen (360 px). */
+[data-evo-region="nav-bottom"] {
+  overflow-x: clip;
+}
+[data-surface="bottom"] > li {
+  min-width: 0;
+}
+[data-surface="bottom"] a {
+  min-height: 3.75rem;
+  min-width: 2.75rem;
+}
+/* Rail rows. */
+[data-surface="rail"] a {
+  min-height: 2.75rem;
+}

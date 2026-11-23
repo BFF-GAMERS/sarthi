@@ -1,0 +1,421 @@
+/* Evolution Engine: ui styles. Owned by one lane, see docs/evolution/contracts.md.
+ *
+ * Structure only. Colours come from the existing tokens, so the theme (System / Light / Dark, Gen Z /
+ * Millennial, high contrast) stays independent of the evolution. */
+
+/* ── D3 hydration gate ────────────────────────────────────────────────────────────────────────────────
+ * The bootstrap script stamped html[data-evo-state] from swayam.evo.boot before first paint. Until the client
+ * store hydrates (the region gains [data-hydrated]) the server-rendered UNIVERSAL list must not flash: its
+ * children are hidden but keep their layout, so the reserved shape is exactly the shape the page was built
+ * with. Regions: nav lists use data-evo-region="nav-*", the Home list below the hero "home*".
+ * If JavaScript never arrives the children reappear after 2.5 s: the gate can hide, never strand. */
+@keyframes evo-gate-open {
+  to {
+    visibility: visible;
+  }
+}
+@keyframes evo-skeleton {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-region]:not([data-hydrated]) {
+  min-height: 2.25rem;
+}
+html[data-evo-state]:not([data-evo-state="UNIVERSAL"])
+  [data-evo-region]:not([data-hydrated])
+  > * {
+  visibility: hidden;
+  animation: evo-gate-open 0s linear 2.5s forwards;
+}
+html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-region^="nav-bottom"]:not([data-hydrated]) {
+  min-height: 3.5rem;
+}
+html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-region^="home"]:not([data-hydrated]) {
+  min-height: 24rem;
+  border-radius: var(--radius-card);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-paper-dim) 0 8rem,
+    transparent 8rem 9.5rem
+  );
+  animation: evo-skeleton 1.6s ease-in-out infinite alternate;
+}
+[data-motion="reduced"] [data-evo-region]:not([data-hydrated]) {
+  animation: none;
+}
+
+/* ── Hero Cockpit: no-flash gate ─────────────────────────────────────────────────────────────────────
+ * The first HTML is the UNIVERSAL hero. For a returning visitor in a learned state the pre-paint script has
+ * already stamped html[data-evo-state], so the parts that differ by state (title, lede, CTA, chip, visual,
+ * lead strip) stay hidden, with their boxes reserved in evo-home.css, until the hero gains [data-hydrated].
+ * Then the keyed replacements mount with one 150 ms fade. visibility (not display) keeps the reserved
+ * layout, so nothing moves; the 2.5 s release means the gate can hide but never strand. */
+html[data-evo-state]:not([data-evo-state="UNIVERSAL"])
+  [data-evo-hero]:not([data-hydrated])
+  :is(.hero-title, .hero-lede, .hero-cta, .hero-visual, .hero-lead, .evo-chip) {
+  visibility: hidden;
+  animation: evo-gate-open 0s linear 2.5s forwards;
+}
+
+/* ── Entrances: CSS only, keyed off the pre-paint html[data-motion] ────────────────────────────────────
+ * No transform is ever written into the markup, so the server HTML, the first client render and a
+ * reduced-motion visitor all agree. Without data-motion (no script) nothing is offset at all. */
+@keyframes hero-rise {
+  from {
+    transform: translateY(18px);
+  }
+}
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes hero-ring {
+  from {
+    stroke-dashoffset: var(--ring-c);
+  }
+}
+html[data-motion="full"] .hero-rise {
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) backwards;
+}
+html[data-motion="full"] .hero-fade {
+  animation: hero-fade-in 0.15s ease-out both;
+}
+html[data-motion="full"] .hero-ring-arc {
+  animation: hero-ring 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards;
+}
+html[data-motion="reduced"] :is(.hero-parallax, .rv-parallax) {
+  transform: none !important;
+}
+
+/* Reveal / Stagger / ScaleImage (components/Reveal.tsx): offset until `data-in`, full motion only. */
+html[data-motion="full"] .rv {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--rv-d, 0s);
+}
+html[data-motion="full"] .rv:not([data-in]) {
+  transform: translateY(var(--rv-y, 32px));
+}
+html[data-motion="full"] .rv-item {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(min(var(--rv-i, 0), 10) * 0.1s);
+}
+html[data-motion="full"] .rv-stagger:not([data-in]) .rv-item {
+  transform: translateY(28px);
+}
+html[data-motion="full"] .rv-scale img {
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-motion="full"] .rv-scale:not([data-in]) img {
+  transform: scale(1.18);
+}
+
+/* ── "Your Swayam" status dot ─────────────────────────────────────────────────────────────────────────
+ * Geometry, shapes and tones live in evo-nav.css (`.evo-dot`); the pulse is the motion kit's
+ * AdaptingPulse (framer-motion, transform + opacity only, one burst per change, fade under reduced motion).
+ * Here it only shares the evolution surfaces' focus ring. */
+.evo-dot:focus-visible,
+.evo-link:focus-visible,
+.evo-why-close:focus-visible,
+.evo-why-link:focus-visible {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+
+/* ── A selected choice card (Settings: Who you are, text size) ────────────────────────────────────────
+ * Inverse fill from the plain tokens: ink behind, paper on top. Not `.bg-ink`: the dark register flips
+ * that class to a pale panel and re-points --color-paper at it, which painted paper type on a paper
+ * fill (1.1:1). The caller adds a check icon too, so the selection never rests on colour alone. */
+.evo-choice-on {
+  border-color: var(--color-ink);
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+}
+.evo-choice-on .evo-choice-sub {
+  color: color-mix(in srgb, var(--color-paper) 82%, transparent);
+}
+@media (forced-colors: active) {
+  .evo-choice-on {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+  .evo-choice-on .evo-choice-sub {
+    color: HighlightText;
+  }
+}
+
+/* ── The one polite announcement ──────────────────────────────────────────────────────────────────── */
+.evo-notice-live {
+  position: fixed;
+  z-index: 60;
+  left: max(1rem, env(safe-area-inset-left));
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  max-width: min(26rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+@media (max-width: 1023px) {
+  /* above the phone's bottom navigation, never the crowded bottom-right corner */
+  .evo-notice-live {
+    bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+@keyframes evo-notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.evo-notice {
+  pointer-events: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.9rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-light);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-body, inherit);
+  font-size: 0.875rem;
+}
+[data-motion="full"] .evo-notice {
+  animation: evo-notice-in 0.18s ease-out both;
+}
+.evo-notice-text {
+  margin: 0;
+  flex: 1 1 12rem;
+}
+.evo-notice-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.evo-link {
+  background: none;
+  border: 0;
+  padding: 0.25rem 0.15rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-saffron-500);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.evo-dismiss {
+  text-decoration: none;
+  color: var(--color-ink-mute);
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+/* ── WhyPanel: bottom sheet below 1024px, popover at and above ────────────────────────────────────── */
+.evo-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  background: rgb(0 0 0 / 0.35);
+}
+.evo-scrim[data-wide="true"] {
+  background: transparent;
+}
+@keyframes evo-sheet-in {
+  from {
+    transform: translateY(1.5rem);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.evo-why {
+  position: fixed;
+  z-index: 90;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 85dvh;
+  overflow-y: auto;
+  padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+  border: 1px solid var(--color-ink-line);
+  border-bottom: 0;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--color-paper-light);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-body, inherit);
+  font-size: 0.875rem;
+}
+.evo-why[data-wide="true"] {
+  left: auto;
+  bottom: auto;
+  width: 22rem;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100dvh - 6rem);
+  border-bottom: 1px solid var(--color-ink-line);
+  border-radius: var(--radius-card);
+}
+[data-motion="full"] .evo-why {
+  animation: evo-sheet-in 0.2s ease-out both;
+}
+.evo-why-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.evo-why-title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+.evo-why-close {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-ink-mute);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.evo-why-exp {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0.6rem 0 0;
+  font-weight: 600;
+}
+.evo-why-conf {
+  color: var(--color-saffron-500);
+  font-variant-numeric: tabular-nums;
+}
+.evo-why-reason,
+.evo-why-restored {
+  margin: 0.35rem 0 0;
+  color: var(--color-ink-soft);
+}
+.evo-why-sub {
+  margin: 1rem 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.evo-why-moved ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--color-ink-soft);
+}
+.evo-why-actions {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.evo-why-btn {
+  justify-content: center;
+}
+.evo-why-link {
+  display: block;
+  padding: 0.35rem 0;
+  font-weight: 600;
+  color: var(--color-saffron-500);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* A real checkbox under a drawn switch. */
+.evo-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+.evo-switch input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+}
+.evo-switch-track {
+  position: relative;
+  flex: none;
+  width: 2.5rem;
+  height: 1.4rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: 999px;
+  background: var(--color-paper-deep);
+  transition: background-color 0.18s ease;
+}
+.evo-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 0.12rem;
+  left: 0.15rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  transition: transform 0.18s ease;
+}
+.evo-switch input:checked + .evo-switch-track {
+  background: var(--color-saffron-500);
+  border-color: transparent;
+}
+.evo-switch input:checked + .evo-switch-track::after {
+  transform: translateX(1.05rem);
+}
+.evo-switch input:focus-visible + .evo-switch-track {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+[data-motion="reduced"] .evo-switch-track,
+[data-motion="reduced"] .evo-switch-track::after {
+  transition: none;
+}
+
+/* ── Settings: Your Swayam ────────────────────────────────────────────────────────────────────────── */
+.evo-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+}
+.evo-choice[data-selected="true"] {
+  border-color: var(--color-saffron-500);
+  background: var(--color-saffron-50);
+}
+.evo-choice:has(input:focus-visible) {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+.evo-choice-dot {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.15rem;
+  border: 2px solid var(--color-ink-mute);
+  border-radius: 999px;
+}
+.evo-choice[data-selected="true"] .evo-choice-dot {
+  border-color: var(--color-saffron-500);
+  background: radial-gradient(circle, var(--color-saffron-500) 0 38%, transparent 42%);
+}
