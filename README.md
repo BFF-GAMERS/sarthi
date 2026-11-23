@@ -1,4 +1,4 @@
-# Swyam — AI learning for CBSE Classes 8–12
+# Sarthi — AI learning for CBSE Classes 8–12
 
 Free learning platform: courses → modules → YouTube lectures, Sarthi AI notes, likely exam questions, quizzes, Sarthi voice tutor (English / Hindi / Hinglish), SkillPoints rewards, study planner, and separate Student / Parent / Teacher dashboards.
 
