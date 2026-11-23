@@ -1,0 +1,524 @@
+/* Evolution Engine: home styles. Owned by one lane, see docs/evolution/contracts.md.
+   Structure only (spacing, columns, density). No colour, font or theme: every
+   hue comes from the existing tokens through the existing utility classes. */
+
+.evo-home {
+  display: block;
+  overflow-anchor: auto;
+}
+
+/* A section that has nothing real to show renders nothing; its slot disappears. */
+.evo-slot:empty {
+  display: none;
+}
+
+.evo-slot {
+  min-width: 0;
+}
+
+/* "Moved up for you": a quiet one-line label, drawn from the slot's own attribute. */
+.evo-slot[data-moved]::before {
+  content: attr(data-moved);
+  display: block;
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: 0.75rem 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+@media (min-width: 640px) {
+  .evo-slot[data-moved]::before {
+    padding-inline: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .evo-slot[data-moved]::before {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* ── Padded sections share rows: halves pair up, full sections span ── */
+.evo-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 2.5rem 1.5rem;
+  padding-block: 2.5rem;
+}
+.evo-row:not(:has(> .evo-slot:not(:empty))) {
+  display: none;
+}
+.evo-row > .evo-slot[data-moved]::before {
+  max-width: none;
+  padding: 0 0 0.5rem;
+}
+
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .evo-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .evo-row > .evo-slot[data-span-tablet="full"] {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .evo-row {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    padding-block: 3.5rem;
+  }
+  .evo-row > .evo-slot[data-span-desktop="full"] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Density (structure only) ── */
+.evo-home[data-density="compact"] .evo-row {
+  gap: 1.5rem 1.25rem;
+  padding-block: 1.75rem;
+}
+.evo-home[data-density="compact"] .evo-shell .kicker {
+  display: none;
+}
+.evo-home[data-density="research"] .evo-row {
+  gap: 2rem 1.75rem;
+}
+.evo-home[data-density="discovery"] .evo-row {
+  padding-block: 3rem;
+}
+
+/* ── The fold ── */
+.evo-more {
+  margin-block: 1.5rem 2.5rem;
+}
+.evo-more-summary {
+  list-style: none;
+}
+.evo-more-summary::-webkit-details-marker {
+  display: none;
+}
+.evo-more-chevron {
+  transition: transform 0.2s ease;
+}
+.evo-more[open] .evo-more-chevron {
+  transform: rotate(180deg);
+}
+[data-motion="reduced"] .evo-more-chevron {
+  transition: none;
+}
+
+/* ── The flat flow: every main section is one grid item, so they can glide ────────────────────────
+   Six inner tracks between two gutter tracks that reproduce `.container-x` (max 80rem, 20/32/40 px,
+   plus the rail inset when the rail is drawn). A section spans 6 (alone), 3 (a half) or 2 (a third);
+   the numbers come from `flowCells` in plan.ts as data attributes. Bleed sections keep their own
+   container and span every track. Columns are placed explicitly so a section can move between
+   groups without the grid re-flowing underneath it; sections that render nothing are filtered out
+   in JavaScript before they reach this grid. */
+.evo-home.evo-flow {
+  --evo-gl: 1.25rem;
+  --evo-gr: 1.25rem;
+  --evo-cg: 1.5rem;
+  --evo-p: 2.5rem;
+  --evo-edge: max(0px, calc((100% - 80rem) / 2));
+  display: grid;
+  grid-template-columns:
+    calc(var(--evo-edge) + var(--evo-gl) - var(--evo-cg) / 2)
+    repeat(6, minmax(0, 1fr))
+    calc(var(--evo-edge) + var(--evo-gr) - var(--evo-cg) / 2);
+  align-items: start;
+}
+@media (min-width: 640px) {
+  .evo-home.evo-flow {
+    --evo-gl: 2rem;
+    --evo-gr: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .evo-home.evo-flow {
+    --evo-gl: 2.5rem;
+    --evo-gr: 2.5rem;
+    --evo-p: 3.5rem;
+  }
+  .app-main .evo-home.evo-flow {
+    --evo-gl: calc(2.5rem + var(--rail-inset, 0rem));
+  }
+}
+.evo-home.evo-flow[data-density="compact"] {
+  --evo-cg: 1.25rem;
+  --evo-p: 1.75rem;
+}
+.evo-home.evo-flow[data-density="research"] {
+  --evo-cg: 1.75rem;
+}
+.evo-home.evo-flow[data-density="discovery"] {
+  --evo-p: 3rem;
+}
+
+/* Padded sections: alone on a phone, then pairs, then up to three across. */
+.evo-flow > .evo-slot {
+  grid-column: 2 / span 6;
+  margin: var(--evo-p) calc(var(--evo-cg) / 2) 0;
+}
+.evo-flow > .evo-slot[data-last] {
+  margin-bottom: var(--evo-p);
+}
+.evo-flow > .evo-slot[data-bleed] {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .evo-flow > .evo-slot:not([data-bleed], [data-tf]) {
+    grid-column: 2 / span 3;
+  }
+  .evo-flow > .evo-slot:not([data-bleed], [data-tf])[data-tj="1"] {
+    grid-column: 5 / span 3;
+  }
+}
+@media (min-width: 1024px) {
+  .evo-flow > .evo-slot:not([data-bleed], [data-df], [data-dc="1"]) {
+    grid-column: 2 / span 3;
+  }
+  .evo-flow > .evo-slot:not([data-bleed], [data-df], [data-dc="1"])[data-dj2="1"] {
+    grid-column: 5 / span 3;
+  }
+}
+/* Three across needs 3 x 22rem inside the container, which is from about 1184 px. */
+@media (min-width: 1184px) {
+  .evo-flow > .evo-slot[data-dc="3"]:not([data-bleed], [data-df]) {
+    grid-column: 2 / span 2;
+  }
+  .evo-flow > .evo-slot[data-dc="3"]:not([data-bleed], [data-df])[data-dj3="1"] {
+    grid-column: 4 / span 2;
+  }
+  .evo-flow > .evo-slot[data-dc="3"]:not([data-bleed], [data-df])[data-dj3="2"] {
+    grid-column: 6 / span 2;
+  }
+}
+
+/* The record label sits above a padded section's own content, not in a container of its own. */
+.evo-flow > .evo-slot:not([data-bleed])[data-moved]::before {
+  max-width: none;
+  padding: 0 0 0.5rem;
+}
+
+/* A fresh move: the label warms up for a few seconds, then settles back to the quiet record. */
+.evo-slot[data-fresh]::before {
+  color: var(--color-saffron-700);
+  transition: color 0.6s var(--ease-out-soft, ease-out);
+}
+[data-motion="reduced"] .evo-slot[data-fresh]::before {
+  transition: none;
+}
+
+/* ── Hero Cockpit ────────────────────────────────────────────────────────────────────────────────────
+ * Structure only. A learned state is html[data-evo-state] != UNIVERSAL (stamped before first paint, so
+ * the reserved boxes below exist in the very first frame) or the section's own [data-evolved] (a live
+ * change, or a Lab preview). Both select the same rules, so before and after hydration are one layout. */
+.hero-lead,
+.hero-strip {
+  display: none;
+}
+.hero-lead-watch {
+  display: block;
+  min-height: 2.75rem;
+  margin-top: 0.75rem;
+}
+/* "Watch Swayam adapt": a live-demo pill with a tiny self-reordering tab preview (UNIVERSAL only). */
+.hero-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  max-width: 100%;
+  padding: 0.3rem 0.5rem 0.3rem 0.35rem;
+  border-radius: 999px;
+  font-family: var(--font-body, inherit);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  text-decoration: none;
+  background: color-mix(in oklab, var(--color-saffron-500) 9%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-saffron-500) 38%, transparent);
+  transition: transform 200ms ease, box-shadow 250ms ease, background-color 250ms ease;
+}
+.hero-watch:hover {
+  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--color-saffron-500) 14%, transparent);
+  box-shadow: 0 10px 28px -14px color-mix(in oklab, var(--color-saffron-500) 70%, transparent);
+}
+.hero-watch:active { transform: translateY(0) scale(0.98); }
+.hero-watch-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-saffron-500);
+  color: #1a1209;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.hero-watch-dot {
+  position: relative;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: #1a1209;
+}
+.hero-watch-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #1a1209;
+  animation: hw-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.hero-watch-label { white-space: nowrap; }
+.hero-watch-mini {
+  position: relative;
+  flex: none;
+  width: 8.1rem;
+  height: 1.55rem;
+  border-radius: 0.55rem;
+  background: color-mix(in oklab, var(--color-ink) 7%, transparent);
+  overflow: hidden;
+}
+.hw-chip {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 2.45rem;
+  height: 1.15rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.4rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  background: color-mix(in oklab, var(--color-ink) 9%, transparent);
+  animation: hw-cycle 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.hw-b { animation-delay: -2s; }
+.hw-c { animation-delay: -4s; }
+/* Each chip visits slot 1 → 2 → 3; whichever sits in slot 1 is "promoted" (saffron). */
+/* The chip leaving slot 3 fades out and reappears in slot 1, so it never slides across the others. */
+@keyframes hw-cycle {
+  0%, 28% { transform: translateX(0); opacity: 1; background: var(--color-saffron-500); color: #1a1209; }
+  33%, 61% { transform: translateX(2.6rem); opacity: 1; background: color-mix(in oklab, var(--color-ink) 9%, transparent); color: var(--color-ink); }
+  66%, 91% { transform: translateX(5.2rem); opacity: 1; background: color-mix(in oklab, var(--color-ink) 9%, transparent); color: var(--color-ink); }
+  94% { transform: translateX(5.2rem); opacity: 0; }
+  95% { transform: translateX(0); opacity: 0; background: var(--color-saffron-500); color: #1a1209; }
+  100% { transform: translateX(0); opacity: 1; background: var(--color-saffron-500); color: #1a1209; }
+}
+@keyframes hw-ping {
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.hero-watch-arrow { flex: none; transition: transform 200ms ease; }
+.hero-watch:hover .hero-watch-arrow { transform: translateX(3px); }
+@media (max-width: 440px) {
+  .hero-watch-mini { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hw-chip, .hero-watch-dot::after { animation: none; }
+  .hw-b { transform: translateX(2.6rem); }
+  .hw-c { transform: translateX(5.2rem); }
+  .hw-a { background: var(--color-saffron-500); color: #1a1209; }
+  .hero-watch, .hero-watch-arrow { transition: none; }
+}
+.hero-watch:focus-visible,
+.hero-lead-item:focus-visible,
+.hero-strip-chip:focus-visible {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+
+:is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-lead {
+  display: block;
+  min-height: 2.75rem;
+  margin-top: 1rem;
+}
+.hero-lead-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  max-width: 36rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-lead-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-light);
+  color: var(--color-ink);
+  font-family: var(--font-body, inherit);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+.hero-lead-item:hover {
+  border-color: var(--color-saffron-500);
+  background: var(--color-saffron-50);
+}
+@media (max-width: 639.98px) {
+  /* three pills share 350 px: no arrow, centred label, so "Applications" is never clipped */
+  .hero-lead-item {
+    justify-content: center;
+    padding: 0 0.4rem;
+    font-size: 0.8125rem;
+  }
+  .hero-lead-item > svg {
+    display: none;
+  }
+}
+
+/* The boxes a learned state reserves, so the search bar never moves between UNIVERSAL and any state. */
+:is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-title-pair {
+  min-height: 1.96em;
+}
+:is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-lede {
+  height: 3.15rem;
+  overflow: hidden;
+}
+:is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-cta {
+  min-height: 3rem;
+}
+@media (min-width: 640px) {
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-lede {
+    height: 3.72rem;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-search {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Touch targets: the hero's own chips are 44 px on a coarse pointer. */
+@media (pointer: coarse) {
+  .hero-try .chip {
+    min-height: 2.75rem;
+    align-items: center;
+  }
+}
+
+/* ── Phone, learned state: the compact cockpit ──
+ * stats + try-chips fold into one 44 px strip, the visual steps aside, the CTA is one button, and the
+ * first promoted section's first card starts inside 844 px at 390 wide. */
+@media (max-width: 639.98px) {
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-pad {
+    padding-top: 5.25rem;
+    padding-bottom: 1rem;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-slogan,
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-try,
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-stats,
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-visual-col,
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-cta-2 {
+    display: none;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-title {
+    margin-top: 0;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-lede {
+    margin-top: 0.75rem;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-search,
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-cta {
+    margin-top: 0.875rem;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-cta {
+    flex-wrap: nowrap;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-cta > .btn-primary {
+    flex: 1 1 auto;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-lead {
+    margin-top: 0.625rem;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    margin-top: 0.375rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  :is(html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) [data-evo-hero], [data-evo-hero][data-evolved]) .hero-strip::-webkit-scrollbar {
+    display: none;
+  }
+}
+.hero-strip-facts {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-mute);
+}
+.hero-strip-chip {
+  position: relative;
+  flex: none;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-dim);
+  color: var(--color-ink);
+  font-family: var(--font-body, inherit);
+  font-size: 12.5px;
+}
+.hero-strip-chip::after {
+  content: "";
+  position: absolute;
+  inset: -0.4rem 0;
+}
+
+/* The priority tiles in a learned state on a phone: one row of four, label and icon only. */
+@media (max-width: 639.98px) {
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-actions-nav {
+    padding-bottom: 0.5rem;
+  }
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-tile {
+    min-height: 4.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+  }
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-tile-top {
+    justify-content: center;
+  }
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-tile-top > span {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-tile-arrow,
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-tile-hint {
+    display: none;
+  }
+  html[data-evo-state]:not([data-evo-state="UNIVERSAL"]) .evo-tile-label {
+    font-size: 0.72rem;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+}

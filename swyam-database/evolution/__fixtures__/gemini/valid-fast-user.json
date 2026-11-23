@@ -1,0 +1,26 @@
+{
+  "_note": "Hand-written sample of a Gemini generateContent HTTP response. NOT recorded from Gemini; spent no quota.",
+  "status": 200,
+  "body": {
+    "candidates": [
+      {
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "{\"primaryState\": \"UNIVERSAL\", \"behaviourMode\": \"QUICK\", \"navigationMode\": \"UNIVERSAL\", \"homepageLayout\": \"UNIVERSAL\", \"priorityActions\": [\"EXPLORE_COURSES\", \"FIND_JOBS\", \"BUILD_A_SKILL\", \"JOIN_COMMUNITY\"], \"reason\": \"Short sessions on the same few pages, so the balanced layout stays.\", \"confidence\": 0.7}"
+            }
+          ]
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 640,
+      "candidatesTokenCount": 110,
+      "totalTokenCount": 750
+    },
+    "modelVersion": "gemini-3.5-flash-lite"
+  }
+}

@@ -1,0 +1,135 @@
+/* Learning helpers: mistake notebook and career test drive.
+   Tokens only, so light and dark both follow the theme. Selection is shown by a
+   saffron edge plus a tint, never by colour alone: the radio itself stays visible. */
+
+.evo-learn-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: 0.9rem;
+  background: var(--color-paper-light);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+.evo-learn-option:hover {
+  border-color: var(--color-saffron-500);
+}
+.evo-learn-option:has(input:focus-visible),
+.evo-learn-pill:has(input:focus-visible) {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+fieldset:disabled .evo-learn-option {
+  cursor: default;
+}
+
+.evo-learn-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: 999px;
+  background: var(--color-paper-light);
+  color: var(--color-ink);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.evo-learn-on {
+  border-color: var(--color-saffron-500);
+  background: color-mix(in srgb, var(--color-saffron-500) 12%, var(--color-paper-light));
+  color: var(--color-ink);
+}
+
+/* Leitner box dots: filled up to the current box. */
+.evo-learn-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-ink-mute);
+}
+.evo-learn-dot-on {
+  background: var(--color-ink-mute);
+}
+
+/* A settled question softens, then goes on its own. */
+.evo-learn-fade {
+  opacity: 0.7;
+  animation: evo-learn-settle 0.6s ease both;
+}
+@keyframes evo-learn-settle {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.7;
+  }
+}
+
+/* The reminders switch. Off by default. */
+.evo-learn-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.6rem;
+  margin-top: 0.1rem;
+  border: 1.5px solid var(--color-ink-mute);
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+.evo-learn-switch:focus-visible {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+.evo-learn-switch-knob {
+  position: absolute;
+  top: 50%;
+  left: 0.2rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: var(--color-ink-mute);
+  transform: translateY(-50%);
+  transition:
+    left 0.18s ease,
+    background-color 0.18s ease;
+}
+.evo-learn-switch-on {
+  border-color: var(--color-saffron-500);
+  background: color-mix(in srgb, var(--color-saffron-500) 18%, var(--color-paper-light));
+}
+.evo-learn-switch-on .evo-learn-switch-knob {
+  left: calc(100% - 1.2rem);
+  background: var(--color-saffron-500);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evo-learn-option,
+  .evo-learn-switch-knob {
+    transition: none;
+  }
+  .evo-learn-fade {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .evo-learn-on {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background: Canvas;
+    color: CanvasText;
+    outline: 2px solid Highlight;
+  }
+  .evo-learn-dot-on,
+  .evo-learn-switch-on .evo-learn-switch-knob {
+    background: Highlight;
+  }
+}

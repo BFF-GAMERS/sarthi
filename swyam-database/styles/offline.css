@@ -1,0 +1,95 @@
+/*
+ * Offline lesson packs.
+ *
+ * Colours come from the site's own tokens, which the dark register redefines,
+ * so nothing here needs a dark override. Meaning is never carried by colour
+ * alone: every state also has an icon and words (see the components).
+ */
+
+.offline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem 0.15rem 0.4rem;
+  border: 1px solid var(--color-emeraldx-400);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-emeraldx-400) 10%, var(--color-paper-light));
+  color: var(--color-ink);
+  font-family: var(--font-body, inherit);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.offline-badge > svg {
+  flex: none;
+  color: var(--color-emeraldx-400);
+}
+
+/* Determinate progress: width is set inline, so a stalled download is visible
+   as a bar that stops, not as a spinner that never says how far it got. */
+.offline-progress {
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-ink-line);
+}
+.offline-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-emeraldx-400);
+  transition: width 0.25s ease-out;
+}
+
+.offline-pack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.offline-pack__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.offline-pack__note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-ink-mute);
+}
+.offline-pack__btn {
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+}
+
+.offline-list__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--color-ink-line);
+}
+.offline-list__row:first-child {
+  border-top: 0;
+}
+.offline-meter {
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-ink-line);
+}
+.offline-meter > span {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  background: var(--color-saffron-500);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offline-progress > span {
+    transition: none;
+  }
+}
