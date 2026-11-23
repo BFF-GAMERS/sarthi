@@ -1,0 +1,3212 @@
+@import "./fonts.css";
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import "./styles/evo-home.css";
+@import "./styles/evo-nav.css";
+@import "./styles/evo-ui.css";
+@import "./styles/evo-lab.css";
+@import "./styles/decoded.css";
+@import "./styles/offline.css";
+@import "./styles/return.css";
+@import "./styles/compare.css";
+@import "./styles/evo-appearance.css";
+@import "./styles/evo-pace.css";
+@import "./styles/evo-swap.css";
+@import "./styles/evo-learning.css";
+@import "./styles/evo-membership.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * ═══════════════════════════════════════════════════════════════
+ * स्वYAM — design system (2026 revamp)
+ *
+ * One product, two registers:
+ *   [data-mode="millennial"]  bone paper, navy ink, one saffron accent.
+ *   [data-mode="genz"]        the same design on a deep navy ground.
+ *
+ * Every token name below is referenced across the pages, so names are
+ * stable and only the values changed. Adding a colour: add it to @theme
+ * and give it a dark value in the genz block.
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-paper-light);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-paper-light);
+  --color-popover-foreground: var(--color-ink);
+  --color-primary: var(--color-saffron-500);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--color-paper-dim);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted: var(--color-paper-dim);
+  --color-muted-foreground: var(--color-ink-mute);
+  --color-accent: var(--color-saffron-50);
+  --color-accent-foreground: var(--color-saffron-700);
+  --color-destructive: #b42318;
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--color-ink-line);
+  --color-input: var(--color-ink-line);
+  --color-ring: var(--color-saffron-500);
+}
+
+@theme {
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  /*
+     The paper register's ground.
+
+     It was #f7f5f0 with pure-white cards, which is a light theme — not the
+     same thing as a paper one. Read next to the dark register it looked like
+     the same product with the lamp switched on. Warm cream with an off-white
+     surface gives this register a material of its own, and it is what the
+     rest of its rules (hairlines rather than shadows, ink-filled buttons,
+     squared corners) are built to sit on.
+  */
+  --color-paper: #f6f1e7;
+  --color-paper-light: #fdfbf6;
+  --color-paper-dim: #efe8da;
+  --color-paper-deep: #e7dfd0;
+
+  /* ── Ink (navy-black, never pure black) ───────────────────── */
+  --color-ink: #1b2230;
+  --color-ink-soft: #454b5c;
+  /* 5.7:1 on paper, 4.6:1 on paper-deep. #6b7080 was 4.5 on paper and 3.6 on the chips. */
+  --color-ink-mute: #5c6171;
+  --color-ink-line: #d9d0c0;
+  --color-ink-700: #333a4a;
+  --color-ink-800: #262d3c;
+  --color-ink-900: #1f2634;
+  --color-ink-950: #1b2230;
+
+  /* ── The accent, which is not the same colour in both registers ──
+     Electric saffron is a screen colour: it earns its brightness against
+     near-black and looks like a highlighter against cream. On paper the
+     accent is a printed red — terracotta, the colour a block-print block
+     leaves behind. Same token name, so no component knows the difference.
+     500 carries white text at 7.2:1 and reads on the cream at 6.4:1. */
+  --color-saffron-electric: #a8251d;
+  --color-saffron-50: #f8ebe8;
+  --color-saffron-100: #f0d6d2;
+  --color-saffron-200: #dfa79f;
+  --color-saffron-300: #c74c42;
+  --color-saffron-400: #b6322a;
+  --color-saffron-500: #a8251d;
+  --color-saffron-600: #8e1e17;
+  --color-saffron-700: #741812;
+  --color-saffron-800: #55110d;
+  --color-saffron-900: #3a0b08;
+  --color-saffron-glow: #c74c42;
+
+  /* ── Supporting hues — data, verification, tags. Never chrome. */
+  --color-marigold: #9a6206;
+  --color-marigold-600: #7d4f04;
+  --color-peacock: #0e6b74;
+  --color-rani: #b02364;
+  --color-indigo: #2f3f8f;
+
+  --color-emeraldx-400: #1d6b47;
+  --color-emeraldx-500: #16563a;
+  --color-emeraldx-600: #114430;
+
+  --color-brand-navy: #16213e;
+
+  /*
+     What goes on top of a filled accent, as a real colour token.
+
+     It existed only as a bare variable, so the one place that used it had to
+     reach for it by hand and everywhere else kept `text-white`. Declaring it
+     here makes `text-on-accent` an ordinary utility, which is the only way a
+     rule like "a saffron fill never carries white" can actually hold across
+     ninety files. The dark register redefines it to near-black further down.
+  */
+  --color-on-accent: #fdfbf6;
+  /* The check on an emerald disc: white on the light register's deep green,
+     near-black on the dark register's bright one (1.77:1 became 9.2:1). */
+  --color-on-emerald: #ffffff;
+
+  /* ── Type ─────────────────────────────────────────────────── */
+  /*
+     The display face belongs to the register, not to the product.
+
+     Newsreader is the paper voice: an editorial serif with print manners,
+     set at 600 and barely tracked. It replaced Fraunces, which is not a bad
+     face — it is an overexposed one. Cream paper plus a Fraunces headline
+     plus a terracotta accent is a combination generated design has worn
+     through, and a reader who has seen it on forty landing pages reads it as
+     a template before they read a word of it.
+
+     The dark register overrides both of these back to Bricolage Grotesque at
+     800 and tight, further down. Body and figures do not change — Instrument
+     Sans and JetBrains Mono are shared, which is what keeps the two
+     registers from becoming two products.
+  */
+  --font-display: "Newsreader", "Instrument Sans", Georgia, serif;
+  --font-editorial: "Newsreader", "Instrument Sans", Georgia, serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-devanagari: "Noto Sans Devanagari", "Nirmala UI", system-ui, sans-serif;
+
+  /* ── Shape ────────────────────────────────────────────────── */
+  /*
+     Corners.
+
+     1.5rem on every card reads as friendly-blog; at the sizes this product
+     uses it also eats the corner of every photograph. 1rem holds the same
+     warmth at a quarter of the roundness, and the controls tighten with it
+     so a button inside a card is not rounder than the card.
+  */
+  --radius-card: 1rem;
+  --radius-control: 0.625rem;
+  --radius-pill: 999px;
+
+  /* ── Depth — shadows tinted with the ink, never grey ───────── */
+  /*
+     On paper, things do not hover — they sit. Everything that used a shadow
+     to say "raised" now says it with a hairline instead, and only the things
+     that genuinely leave the page (a dialog, a dropdown) keep a soft one.
+  */
+  --shadow-soft: none;
+  --shadow-raised: none;
+  --shadow-float: 0 10px 30px -18px rgb(27 34 48 / 0.38);
+  --shadow-accent: none;
+
+  --tracking-tightest: -0.03em;
+
+  --animate-marquee: marquee 42s linear infinite;
+}
+
+:root {
+  --radius: 0.875rem;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-quick: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-springy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --text-scale: 1;
+  /* One vertical rhythm for a page section: 80px on a phone, 112px wide. */
+  --section-y: clamp(5rem, 4rem + 3vw, 7rem);
+  /* Resting and lifted card elevation; each register redefines both. */
+  --shadow-card: none;
+  --shadow-lift: var(--shadow-raised);
+  /* Height of the floating navigation island plus its top offset. Pages
+     that start with `pt-28` clear it; keep that in mind for new pages. */
+  --nav-h: 4rem;
+  /* 3.1:1 on paper-light. See `.input`. */
+  --color-field-line: #8c8879;
+  /*
+     Error text had been Tailwind's red-600, which lands at 4.2–4.4:1 on
+     this paper — under AA, on the one sentence a person has to read to
+     recover from a mistake. 6:1 in light, and a light red in the dark
+     register where a dark red is 2.7:1 and effectively invisible.
+  */
+  --color-danger: #b42318;
+  /*
+     What goes on top of a filled accent.
+
+     White, everywhere, was the assumption, and it holds on terracotta at
+     7.2:1. On the dark register's electric saffron it lands at 3.4:1 —
+     under AA on a call to action, which is the one place a page cannot
+     afford to be hard to read. A bright accent wants a dark label; that
+     is a fact about the colour, so it belongs in a token rather than in
+     an exception scattered through the pages.
+  */
+  --color-on-accent: #fdfbf6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAPER REGISTER — [data-mode="millennial"]
+
+   Shape and motion, which the palette above cannot carry. Corners go
+   almost square, because a 16px radius on cream reads as an app chrome
+   pretending to be a page; and the register stops looping. Nothing here
+   animates on its own — a thing moves when you touch it, and then it
+   stops.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Shape and motion. The palette for this register lives in the second
+   [data-mode="millennial"] block further down, which is the older of the
+   two and wins on anything both of them set. */
+[data-mode="millennial"] {
+  --radius-card: 0.25rem;
+  --radius-control: 0.25rem;
+  --radius-pill: 0.1875rem;
+  /*
+     The ticker keeps rotating here too, slower.
+
+     "Nothing loops on paper" was my rule and it was wrong in one place: the
+     activity strip is duplicated in the markup and animated from 0 to -50%,
+     so stopping it does not produce a calm static list — it produces a
+     paused marquee, frozen mid-travel with a clipped word at each end. A
+     stopped carousel reads as broken, not as restrained. Sixty seconds
+     instead of forty-two is the difference in temperament.
+  */
+  --animate-marquee: marquee 60s linear infinite;
+
+  /* The hero illustration's ground. A saffron wash behind it is the dark
+     register's move; on cream the same wash comes out blush pink and drags
+     the whole top of the page with it. Here the plate sits on deeper paper
+     and is separated by a rule, like a printed figure. */
+  --plate-ground: var(--color-paper-dim);
+  --plate-wash: var(--color-paper-deep);
+  --plate-radius: 0.375rem;
+  --color-on-accent: #fdfbf6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK REGISTER — [data-mode="genz"]
+   Same design, deep navy ground. Only tokens change here, plus a
+   handful of component rules that need a different treatment on a
+   dark surface (a shadow is invisible; an edge is not).
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-mode="genz"] {
+  /* 3.4:1 on the field fill: the 3:1 WCAG 1.4.11 asks of a control's edge. */
+  --color-field-line: #6e7487;
+  --color-on-emerald: #06251a;
+  --color-danger: #ff9e90;
+  color-scheme: dark;
+
+  /* Its own voice, and its own shape: a heavy grotesque set tight, pills
+     and generous corners, and the marquee running. */
+  --font-display: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+  --font-editorial: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+  --radius-card: 1rem;
+  --radius-control: 0.625rem;
+  --radius-pill: 999px;
+  --animate-marquee: marquee 42s linear infinite;
+  --plate-ground: var(--color-saffron-50);
+  --plate-wash: var(--color-saffron-100);
+  --plate-radius: 2.5rem;
+  --color-on-accent: #0d0f15;
+
+  /*
+     The dark ground, restacked.
+
+     The card sat at #161922 on a #0e1016 page with a #262a36 hairline: two
+     steps of about 2% each, which on a phone in daylight is no step at all —
+     cards floated without edges and the page read as one grey field. The
+     surfaces now climb properly and the hairline is visible enough to be a
+     hairline.
+  */
+  --color-paper: #0d0f15;
+  --color-paper-light: #171c2a;
+  --color-paper-dim: #121520;
+  --color-paper-deep: #272f45;
+  /* A hovered row or lifted card: one rung above paper-light. */
+  --surface-raised: #1e2434;
+
+  --color-ink: #f4f3ef;
+  --color-ink-soft: #c9cad2;
+  --color-ink-mute: #9599a8;
+  --color-ink-line: #2d3242;
+  --color-ink-700: #d8d9de;
+  --color-ink-800: #e6e6ea;
+  --color-ink-900: #f0f0f3;
+  --color-ink-950: #f3f2ee;
+
+  /* Saffron brightens so it reads on navy: 500 clears 5.5:1 on the ground. */
+  --color-saffron-electric: #ff6a2e;
+  --color-saffron-50: #2a150c;
+  --color-saffron-100: #3a1c0f;
+  --color-saffron-200: #6b2f16;
+  --color-saffron-300: #ff8c62;
+  --color-saffron-400: #f26a38;
+  --color-saffron-500: #f05a22;
+  --color-saffron-600: #ff7a45;
+  --color-saffron-700: #ffa583;
+  --color-saffron-800: #ffc7b1;
+  --color-saffron-900: #ffe3d9;
+  --color-saffron-glow: #ff9a70;
+
+  --color-marigold: #e0a63a;
+  --color-marigold-600: #f0bd5e;
+  --color-peacock: #3fb8c3;
+  --color-rani: #f26aa6;
+  --color-indigo: #8c9cf0;
+
+  --color-emeraldx-400: #3ddc97;
+  --color-emeraldx-500: #2bc384;
+  --color-emeraldx-600: #1fa36c;
+
+  --color-brand-navy: #c3cbff;
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px -8px rgb(0 0 0 / 0.5);
+  --shadow-raised: 0 2px 6px rgb(0 0 0 / 0.55), 0 20px 40px -14px rgb(0 0 0 / 0.6);
+  --shadow-float: 0 10px 24px -10px rgb(0 0 0 / 0.6), 0 34px 70px -20px rgb(0 0 0 / 0.7);
+  --shadow-accent: 0 14px 34px -8px rgb(240 90 34 / 0.45);
+
+  /* Elevation on a dark ground is an edge, not a shadow: a lit top rim, a
+     tight contact shadow, one long soft drop. The lifted card also lets a
+     little of the accent bleed under it. */
+  --shadow-card:
+    inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.45),
+    0 14px 28px -18px rgb(0 0 0 / 0.7);
+  --shadow-lift:
+    inset 0 1px 0 rgb(255 255 255 / 0.09), 0 2px 4px rgb(0 0 0 / 0.5),
+    0 22px 44px -20px rgb(0 0 0 / 0.75), 0 26px 50px -34px rgb(240 90 34 / 0.35);
+}
+
+/*
+   The paper register's ground.
+
+   The dark register paints a room behind the page — blurred orbs and a
+   drifting grid that follow the pointer (DepthField). Paper had nothing at
+   all: a flat cream fill, which at full-screen width is a lot of nothing.
+
+   Its equivalent is not orbs; it is a sheet. Faint ruled lines every 34px,
+   the warmth of a lamp falling from the top right, and a cooler weight in
+   the far corner. All three are `fixed`, so the page slides over them as
+   you scroll and the sheet stays put — depth without anything looping,
+   and without a single frame of JavaScript.
+*/
+[data-mode="millennial"] body {
+  background-image:
+    repeating-linear-gradient(to bottom, rgb(27 34 48 / 0.028) 0 1px, transparent 1px 34px),
+    radial-gradient(50rem 32rem at 94% -4%, rgb(168 37 29 / 0.09), transparent 62%),
+    radial-gradient(38rem 26rem at 2% 12%, rgb(27 34 48 / 0.05), transparent 58%);
+  background-attachment: fixed;
+}
+
+[data-mode="genz"] body {
+  background-image:
+    radial-gradient(56rem 36rem at 8% -8%, rgb(240 90 34 / 0.13), transparent 60%),
+    radial-gradient(44rem 30rem at 96% 2%, rgb(63 184 195 / 0.08), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer base {
+  * {
+    border-color: var(--color-ink-line);
+  }
+
+  /*
+   * `clip`, not `hidden`: `hidden` turns the element into a scroll container
+   * and kills `position: sticky` on every descendant.
+   */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: calc(100% * var(--text-scale));
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.6;
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /*
+   * Paper grain. A fixed, inert layer of very faint noise over the whole
+   * page: it breaks the digital flatness of large flat fills without
+   * being visible as a texture. Two per cent is the whole effect.
+   */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.028;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+  }
+  [data-mode="genz"] body::after {
+    opacity: 0.05;
+    mix-blend-mode: screen;
+  }
+
+  /* Display type: heavy, tight, sentence case. Presence from weight and
+     size, not from capitals. */
+  .font-display {
+    font-weight: 600;
+    letter-spacing: -0.022em;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  .card p,
+  .panel p,
+  .card-flat p {
+    line-height: 1.6;
+  }
+
+  /* Figures line up as figures. */
+  .font-mono,
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: var(--color-saffron-500);
+    color: #fff;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-paper-dim);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-paper-deep);
+    border-radius: 999px;
+    border: 3px solid var(--color-paper-dim);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-saffron-500);
+  }
+
+  /* Keyboard focus is the same lit ring everywhere, and it appears
+     instantly — no transition on a focus indicator. */
+  :focus-visible {
+    outline: 2px solid var(--color-saffron-500);
+    outline-offset: 3px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[80rem] px-5 sm:px-8 lg:px-10;
+  }
+
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  /*
+     Quiet at rest, and only at rest.
+
+     Every card carried a shadow all the time, so a grid of thirty-nine of
+     them was thirty-nine soft grey haloes competing with the type. A shadow
+     should mean "this one, now" — which is what hover and focus mean — so
+     the resting card is a hairline on paper and the lift is the hover.
+  */
+  .card {
+    @apply relative min-w-0 border border-ink-line bg-paper-light;
+    border-radius: var(--radius-card);
+    transition:
+      transform 0.35s var(--ease-out-soft),
+      box-shadow 0.35s var(--ease-out-soft),
+      border-color 0.35s var(--ease-out-soft),
+      background-color 0.35s var(--ease-out-soft);
+  }
+  /* Release settles with a hair of overshoot; hover-in stays smooth. */
+  .card:not(:hover):not(:has(:focus-visible)) {
+    transition:
+      transform 0.45s var(--ease-springy),
+      box-shadow 0.35s var(--ease-out-soft),
+      border-color 0.35s var(--ease-out-soft),
+      background-color 0.35s var(--ease-out-soft);
+  }
+  .card:hover,
+  .card:has(:focus-visible) {
+    border-color: rgb(20 22 31 / 0.14);
+    box-shadow: var(--shadow-raised);
+  }
+  .card:not(.card-reveal):hover,
+  .card:not(.card-reveal):has(:focus-visible) {
+    transform: translateY(-4px);
+  }
+  /* A hover strip below the card keeps :hover alive while it lifts. */
+  .card:not(.card-reveal):hover::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 8px;
+  }
+
+  .card-flat {
+    @apply border border-ink-line bg-paper-light transition-colors duration-300;
+    border-radius: var(--radius-card);
+  }
+  .card-flat:hover {
+    border-color: var(--color-saffron-200);
+    background-color: var(--color-saffron-50);
+  }
+
+  .panel {
+    @apply border border-ink-line bg-paper-light;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .glass {
+    @apply border border-ink-line bg-paper-light/80 backdrop-blur-xl;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* A soft tonal surface: no border, no shadow, just a tint. */
+  .tonal {
+    background-color: var(--color-paper-dim);
+    border-radius: var(--radius-card);
+  }
+
+  .gradient-text {
+    @apply text-saffron-500;
+  }
+  .gradient-warm {
+    background-image: linear-gradient(
+      140deg,
+      var(--color-paper-light) 0%,
+      var(--color-saffron-50) 70%,
+      var(--color-saffron-100) 100%
+    );
+  }
+  .gradient-ink {
+    background-image: linear-gradient(150deg, #1e2233 0%, #14161f 55%, #0d0f16 100%);
+  }
+
+  /*
+   * The dark band. Navy, with two faint lights so it is a room rather than
+   * a slab. Its contents ask for light type via text-paper-light, and in
+   * dark mode the two custom properties flip back inside it so the copy
+   * never disappears.
+   */
+  .ink-block {
+    position: relative;
+    background-color: var(--color-ink);
+    background-image:
+      radial-gradient(50rem 30rem at 0% 0%, rgb(207 58 11 / 0.16), transparent 62%),
+      radial-gradient(40rem 26rem at 100% 100%, rgb(14 107 116 / 0.14), transparent 60%);
+    color: #f7f5f0;
+  }
+
+  /* ── Controls ─────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-body text-sm font-semibold text-white;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-saffron-500);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.18) inset,
+      var(--shadow-soft);
+    transition:
+      transform 0.25s var(--ease-out-soft),
+      box-shadow 0.25s var(--ease-out-soft),
+      background-color 0.25s var(--ease-out-soft);
+  }
+  .btn-primary:hover {
+    background-color: var(--color-saffron-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-accent);
+  }
+  .btn-primary:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-soft);
+  }
+  /*
+     Disabled is the same button with the volume down — not a grey slab that
+     reads as a different control altogether. It keeps its colour so the eye
+     still knows which button it is, loses its shadow and its hover, and says
+     "not now" rather than "not this".
+  */
+  .btn-primary:disabled,
+  .btn-primary[aria-disabled="true"] {
+    opacity: 0.45;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .btn-primary:disabled:hover,
+  .btn-primary[aria-disabled="true"]:hover {
+    background-color: var(--color-saffron-500);
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-ghost:disabled,
+  .btn-ghost[aria-disabled="true"] {
+    opacity: 0.5;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .btn-ghost:disabled:hover,
+  .btn-ghost[aria-disabled="true"]:hover {
+    border-color: var(--color-ink-line);
+    background-color: var(--color-paper-light);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-ink-line bg-paper-light px-6 py-3 font-body text-sm font-semibold text-ink;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-soft);
+    transition:
+      transform 0.25s var(--ease-out-soft),
+      box-shadow 0.25s var(--ease-out-soft),
+      background-color 0.25s var(--ease-out-soft),
+      border-color 0.25s var(--ease-out-soft);
+  }
+  .btn-ghost:hover {
+    border-color: rgb(20 22 31 / 0.22);
+    background-color: var(--color-paper);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-raised);
+  }
+  .btn-ghost:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-dark {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-body text-sm font-semibold;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    box-shadow: var(--shadow-soft);
+    transition:
+      transform 0.25s var(--ease-out-soft),
+      box-shadow 0.25s var(--ease-out-soft),
+      background-color 0.25s var(--ease-out-soft);
+  }
+  .btn-dark:hover {
+    background-color: var(--color-ink-700);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-raised);
+  }
+  .btn-dark:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* A text link with an arrow, for tertiary actions. */
+  .btn-text {
+    @apply inline-flex items-center gap-1.5 py-3 font-body text-sm font-semibold text-saffron-600;
+    transition: color 0.2s var(--ease-quick);
+  }
+  .btn-text:hover {
+    color: var(--color-saffron-700);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 bg-paper-dim px-2.5 py-1 font-body text-[12px] font-medium leading-snug text-ink-soft;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+  }
+  .chip-accent {
+    @apply inline-flex items-center gap-1.5 bg-saffron-50 px-2.5 py-1 font-body text-[12px] font-medium leading-snug text-saffron-700;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+  }
+
+  /*
+     A form field's border is a user-interface component, which WCAG asks to
+     reach 3:1 against what is behind it — the decorative hairline used to
+     separate two paragraphs is nowhere near that, and it was doing both jobs.
+     `--color-field-line` is the one that has to be seen.
+  */
+  .input {
+    @apply w-full border bg-paper-light px-4 py-3 font-body text-[16px] text-ink outline-none placeholder:text-ink-mute sm:text-[15px];
+    border-color: var(--color-field-line);
+    border-radius: var(--radius-control);
+    transition:
+      border-color 0.2s var(--ease-quick),
+      box-shadow 0.2s var(--ease-quick),
+      background-color 0.2s var(--ease-quick);
+  }
+  .input:hover:not(:focus):not(:disabled) {
+    border-color: var(--color-ink-mute);
+  }
+  .input:focus,
+  .input:focus-visible {
+    outline: none;
+    border-color: var(--color-saffron-500);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-saffron-500) 22%, transparent);
+  }
+  .input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 16%, transparent);
+  }
+  .input:disabled {
+    background-color: var(--color-paper-dim);
+    color: var(--color-ink-mute);
+  }
+
+  .filter-pill {
+    @apply inline-flex h-11 items-center gap-1.5 border border-ink-line bg-paper-light px-3.5 font-body text-[13px] font-medium text-ink-soft;
+    border-radius: var(--radius-pill);
+    transition:
+      color 0.2s var(--ease-quick),
+      background-color 0.2s var(--ease-quick),
+      border-color 0.2s var(--ease-quick),
+      box-shadow 0.2s var(--ease-quick);
+  }
+  .filter-pill:hover {
+    border-color: rgb(20 22 31 / 0.22);
+    color: var(--color-ink);
+  }
+  .filter-pill[aria-pressed="true"] {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    border-color: transparent;
+  }
+
+  .sticker {
+    @apply inline-block bg-saffron-500 px-2.5 py-1 font-body text-[11px] font-semibold tracking-[0.02em] text-white;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .badge-soft {
+    @apply inline-flex items-center gap-1.5 bg-paper-light/90 px-2.5 py-1 font-body text-[11px] font-semibold text-ink backdrop-blur-sm;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* ── Pictures ─────────────────────────────────────────────────
+     A box that holds its own space, tinted while the bytes are in the air
+     and faded in when they land. See components/Media.tsx. */
+  .media {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-paper-dim);
+  }
+  .media > img {
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-out-soft);
+  }
+  .media > img[data-loaded="true"] {
+    opacity: 1;
+  }
+  /* One slow sweep, only while waiting, and never for anybody who asked for
+     less motion — a shimmer that runs forever is a worse hole than a plain
+     grey one. */
+  .media.is-loading::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgb(255 255 255 / 0.45) 50%,
+      transparent 80%
+    );
+    transform: translateX(-100%);
+    animation: media-sweep 1.6s var(--ease-out-soft) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .media.is-loading::before {
+      animation: none;
+    }
+  }
+
+  /* ── Expanding card mechanics (unchanged) ─────────────────────
+     Expansion is driven ONLY by [data-expanded]; see use-card-expand.ts. */
+  .card-reveal {
+    position: relative;
+  }
+  .hover-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 0.28s var(--ease-out-soft),
+      opacity 0.2s var(--ease-out-soft);
+  }
+  .hover-panel > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .card-reveal[data-expanded="true"] .hover-panel {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .hover-panel-inner {
+    padding-top: 1rem;
+  }
+  .card-reveal[data-expanded="true"] {
+    z-index: 20;
+  }
+  .card-grid {
+    align-items: start;
+  }
+  .grid:has(.card-reveal) {
+    align-items: start;
+  }
+  /*
+   * The same guarantee for flex rows, which default to `stretch` and so let
+   * one expanded card drag every card beside it to its own height. Scoped to
+   * direct children and one wrapper level — the depth the rail actually uses —
+   * so a card's own internal flex column can never match this.
+   */
+  .flex:has(> .card-reveal),
+  .flex:has(> * > .card-reveal) {
+    align-items: flex-start;
+  }
+  /*
+     A phone gets a list, not thirty-nine landing pages.
+
+     Touch devices had every card permanently expanded — overview, facts and
+     four buttons on each one — so a card was 586px tall and the catalogue
+     was a 27,000px scroll. Nobody browses that; they leave. The detail page
+     is one tap away and is where those buttons belong, so on touch the card
+     stays as the summary it was drawn as: picture, trade, title, who runs
+     it, price.
+
+     A pointing device keeps the hover reveal, where it costs nothing: the
+     information appears in place of a hover that would otherwise do nothing.
+  */
+  @media (hover: none) {
+    .card-reveal .hover-panel {
+      display: none;
+    }
+  }
+
+  /* ── Horizontal rail ──────────────────────────────────────── */
+  .rail {
+    display: flex;
+    /* Not `stretch`, which is the flex default: an expanded card would
+       otherwise pull every card beside it to its own height and leave them
+       standing in a column of empty space. */
+    align-items: flex-start;
+    gap: 1.25rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  /* ── Type scale ───────────────────────────────────────────── */
+  .type-hero {
+    font-size: clamp(2.75rem, 1.7rem + 3.9vw, 5.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+  }
+  .type-xl {
+    font-size: clamp(2.25rem, 1.4rem + 3vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+  .type-lg {
+    font-size: clamp(1.8rem, 1.25rem + 2vw, 2.8rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+  }
+  .type-md {
+    font-size: clamp(1.4rem, 1.1rem + 1.1vw, 1.9rem);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+  }
+  .type-lede {
+    font-size: clamp(1.05rem, 0.97rem + 0.35vw, 1.2rem);
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
+  .section-title {
+    @apply font-display text-ink;
+    font-weight: 700;
+    font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .datum {
+    @apply font-mono text-[11px] uppercase tracking-[0.12em] text-ink-mute;
+  }
+
+  /* Eyebrow label: a dot, then small tracked capitals. */
+  .kicker {
+    @apply flex w-fit items-center gap-2 font-body text-[11.5px] font-semibold uppercase tracking-[0.14em] text-saffron-600;
+  }
+  .kicker::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
+    flex: none;
+  }
+
+  /* Emphasis inside a headline: accent colour, same face, upright. */
+  .editorial-em {
+    @apply font-display text-saffron-500;
+    font-style: normal;
+  }
+
+  .rule,
+  .rule-thin {
+    @apply border-t border-ink-line;
+  }
+
+  .field-rule {
+    @apply w-full border-0 border-b border-ink-line bg-transparent px-0 pb-2.5 pt-5 font-body text-lg text-ink outline-none transition-colors;
+  }
+  .field-rule::placeholder {
+    /* Full ink-mute: at 60% it was 2.59:1, at 100% it is 5.6:1. */
+    color: var(--color-ink-mute);
+    opacity: 1;
+  }
+  .field-rule:focus {
+    @apply border-saffron-500;
+  }
+  .field-rule:focus-visible {
+    outline: none;
+  }
+
+  .matrix-row {
+    @apply relative block w-full border border-transparent border-b-ink-line bg-transparent text-left duration-300;
+    transition-property: background-color, border-color, box-shadow, border-radius;
+  }
+  .matrix-row:hover,
+  .matrix-row:focus-within {
+    @apply border-ink-line bg-paper-light;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .dropcap::first-letter {
+    @apply float-left mr-3 font-display text-saffron-500;
+    font-size: 4.2em;
+    line-height: 0.78;
+    padding-top: 0.06em;
+  }
+
+  /* ── Textures — kept faint on purpose ─────────────────────── */
+  .halftone {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 8px 8px;
+    color: var(--color-ink);
+  }
+  .ledger {
+    background-image: radial-gradient(rgb(20 22 31 / 0.11) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 100%);
+  }
+  .jaali {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%2314161f' stroke-width='1'%3E%3Cpath d='M24 2 46 24 24 46 2 24Z'/%3E%3Cpath d='M24 14 34 24 24 34 14 24Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 48px 48px;
+  }
+  .ikat {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='24' viewBox='0 0 40 24'%3E%3Cg fill='none' stroke='%2314161f' stroke-width='1.5'%3E%3Cpath d='M0 18 10 6 20 18 30 6 40 18'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 40px 24px;
+  }
+
+  .link-sweep {
+    @apply relative inline-block;
+  }
+  .link-sweep::after {
+    content: "";
+    @apply absolute -bottom-0.5 left-0 h-[2px] w-full origin-right scale-x-0 rounded-full bg-saffron-500 transition-transform duration-300 ease-out;
+  }
+  .link-sweep:hover::after {
+    @apply origin-left scale-x-100;
+  }
+
+  /* ── Navigation island ────────────────────────────────────── */
+  .nav-island {
+    border-radius: var(--radius-pill);
+    border: 1px solid color-mix(in srgb, var(--color-ink) 9%, transparent);
+    background-color: rgb(255 255 255 / 0.72);
+    /* Standard property only. Writing -webkit- alongside it made the
+     minifier keep the prefix and drop this line, which is why the
+     navbar stopped frosting; Lightning CSS prefixes on its own. */
+    backdrop-filter: blur(12px) saturate(1.25);
+    box-shadow: var(--shadow-raised);
+    transition:
+      background-color 0.3s var(--ease-quick),
+      box-shadow 0.3s var(--ease-quick),
+      border-color 0.3s var(--ease-quick);
+  }
+  .nav-link {
+    @apply relative inline-flex h-11 items-center px-3 font-body text-[14px] font-medium whitespace-nowrap text-ink-soft xl:px-3.5;
+    border-radius: var(--radius-pill);
+    transition:
+      color 0.2s var(--ease-quick),
+      background-color 0.2s var(--ease-quick);
+  }
+  .nav-link:hover {
+    color: var(--color-ink);
+    background-color: color-mix(in srgb, var(--color-ink) 6%, transparent);
+  }
+  .nav-link[data-active="true"] {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .nav-icon {
+    @apply relative grid h-11 w-11 flex-none place-items-center text-ink-soft;
+    border-radius: var(--radius-pill);
+    transition:
+      color 0.2s var(--ease-quick),
+      background-color 0.2s var(--ease-quick),
+      transform 0.2s var(--ease-quick);
+  }
+  .nav-icon:hover {
+    color: var(--color-ink);
+    background-color: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  }
+  .nav-icon:active {
+    transform: scale(0.92);
+  }
+
+  /* ── Stat figure ──────────────────────────────────────────── */
+  .stat-figure {
+    @apply font-display text-ink;
+    font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  /*
+     Vertical rhythm.
+
+     Pages were spacing their sections by hand — mt-6 here, mt-10 there,
+     space-y-8 in one column and space-y-6 in the next — so nothing lined up
+     across two pages. One scale, three steps: inside a section, between
+     sections, between chapters.
+  */
+  .stack-sm > * + * {
+    margin-top: 1rem;
+  }
+  .stack > * + * {
+    margin-top: 2rem;
+  }
+  .stack-lg > * + * {
+    margin-top: 3.5rem;
+  }
+
+  /* A section that needs a boundary but not a box. */
+  .quiet {
+    border-radius: var(--radius-card);
+    background-color: color-mix(in srgb, var(--color-paper-dim) 55%, transparent);
+  }
+
+  /* The one red. Use this, never a raw palette red. */
+  .text-danger {
+    color: var(--color-danger);
+  }
+  .border-danger {
+    border-color: var(--color-danger);
+  }
+
+  .surface-muted {
+    @apply bg-paper-dim;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  /*
+   * iOS zooms the page whenever a focused field's text is under 16px, and
+   * leaves you panning a scaled layout to find the button you were reaching
+   * for. `.input` and 41 call sites that shrink it further all tripped it.
+   *
+   * This must live in @layer utilities and after Tailwind's own, because for
+   * `!important` declarations the cascade reverses layer order: an unlayered
+   * rule would LOSE to the `!text-[13px]` utilities it has to beat. Same
+   * layer, later in the file, so it wins.
+   *
+   * The `:not()` chains are not filters, they are specificity. Each one
+   * counts, giving these selectors (0,4,1) against a utility class's
+   * (0,1,0) — without them `select` loses to `!text-xs`, which is exactly
+   * what happened when it was written as a bare element selector.
+   *
+   * Only below 640px. Above that there is no zoom rule to defeat and the
+   * denser type is a deliberate choice.
+   */
+  @media (max-width: 639px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    select:not([multiple]):not([size]):not([hidden]):not([aria-hidden="true"]),
+    textarea:not([hidden]):not([readonly]):not([disabled]):not([aria-hidden="true"]) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK REGISTER — component adjustments
+   ═══════════════════════════════════════════════════════════════ */
+
+/* On a dark ground a shadow says nothing and an edge says everything, so
+   the raised surfaces get a hairline of light along the top. */
+[data-mode="genz"] .card,
+[data-mode="genz"] .panel,
+[data-mode="genz"] .glass {
+  box-shadow: var(--shadow-card);
+}
+[data-mode="genz"] .card:hover,
+[data-mode="genz"] .card:has(:focus-visible) {
+  box-shadow: var(--shadow-lift);
+  background-color: var(--surface-raised);
+}
+
+[data-mode="genz"] .card,
+[data-mode="genz"] .panel,
+[data-mode="genz"] .glass,
+[data-mode="genz"] .card-flat {
+  border-color: rgb(255 255 255 / 0.08);
+  background-image: linear-gradient(160deg, rgb(255 255 255 / 0.035), transparent 45%);
+}
+[data-mode="genz"] .card:hover,
+[data-mode="genz"] .card:has(:focus-visible) {
+  border-color: rgb(255 255 255 / 0.16);
+}
+[data-mode="genz"] .glass {
+  background-color: color-mix(in srgb, var(--color-paper-light) 78%, transparent);
+}
+[data-mode="genz"] .card-flat:hover {
+  background-color: var(--color-saffron-50);
+  border-color: var(--color-saffron-200);
+}
+
+/* On a bright saffron, dark type is what clears contrast. */
+[data-mode="genz"] .btn-primary,
+[data-mode="genz"] .sticker {
+  color: #14161f;
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.25) inset,
+    var(--shadow-soft);
+}
+[data-mode="genz"] .btn-primary:hover {
+  background-color: var(--color-saffron-600);
+  box-shadow: var(--shadow-accent);
+}
+[data-mode="genz"] .btn-ghost {
+  background-color: rgb(255 255 255 / 0.04);
+  border-color: rgb(255 255 255 / 0.1);
+}
+[data-mode="genz"] .btn-ghost:hover {
+  background-color: rgb(255 255 255 / 0.08);
+  border-color: rgb(255 255 255 / 0.2);
+}
+[data-mode="genz"] .btn-dark {
+  background-color: var(--color-ink);
+  /*
+     A literal, not the token, and deliberately.
+
+     The dark panels below (.gradient-ink, .ink-block, .bg-ink) flip
+     --color-paper locally so that light type sitting on them keeps reading
+     as light. A button inside such a panel is not type on the panel — it is
+     its own surface — so inheriting that flip painted a near-white label on
+     a near-white button: 1.06:1, invisible. Reading the global value here is
+     not possible once a parent has shadowed it, so the value is stated.
+  */
+  color: #0d0f15;
+}
+[data-mode="genz"] .chip {
+  background-color: rgb(255 255 255 / 0.06);
+}
+[data-mode="genz"] .chip-accent {
+  background-color: rgb(240 90 34 / 0.16);
+  color: var(--color-saffron-600);
+}
+[data-mode="genz"] .filter-pill {
+  background-color: rgb(255 255 255 / 0.04);
+  border-color: rgb(255 255 255 / 0.1);
+}
+[data-mode="genz"] .filter-pill[aria-pressed="true"] {
+  background-color: var(--color-saffron-500);
+  color: #14161f;
+}
+[data-mode="genz"] .input,
+[data-mode="genz"] .field-rule {
+  background-color: rgb(255 255 255 / 0.04);
+  border-color: var(--color-field-line);
+}
+[data-mode="genz"] .input:hover:not(:focus):not(:disabled) {
+  border-color: var(--color-ink-mute);
+}
+[data-mode="genz"] .input:focus {
+  border-color: var(--color-saffron-500);
+  box-shadow: 0 0 0 4px rgb(240 90 34 / 0.22);
+}
+[data-mode="genz"] .input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+[data-mode="genz"] .badge-soft {
+  background-color: rgb(14 16 22 / 0.7);
+}
+[data-mode="genz"] .nav-island {
+  background-color: color-mix(in srgb, var(--color-paper-light) 72%, transparent);
+  border-color: rgb(255 255 255 / 0.08);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    var(--shadow-raised);
+}
+[data-mode="genz"] .nav-link:hover,
+[data-mode="genz"] .nav-icon:hover {
+  background-color: rgb(255 255 255 / 0.07);
+}
+[data-mode="genz"] .gradient-warm {
+  background-image: linear-gradient(140deg, #1a1d27 0%, #26180f 100%);
+}
+[data-mode="genz"] .gradient-ink {
+  background-image: linear-gradient(150deg, #1d2130 0%, #12141c 55%, #0b0d13 100%);
+}
+[data-mode="genz"] .tonal {
+  background-color: rgb(255 255 255 / 0.04);
+}
+[data-mode="genz"] .ledger {
+  background-image: radial-gradient(rgb(255 255 255 / 0.12) 1px, transparent 1.2px);
+}
+[data-mode="genz"] .halftone {
+  color: #f3f2ee;
+}
+[data-mode="genz"] .jaali,
+[data-mode="genz"] .ikat {
+  filter: invert(1);
+  opacity: 0.4;
+}
+
+/*
+ * Dark panels stay dark on a dark page, but the light type inside them
+ * must keep reading as light. Flipping these locally fixes every
+ * descendant at once.
+ */
+[data-mode="genz"] .ink-block,
+[data-mode="genz"] .gradient-ink,
+[data-mode="genz"] .bg-ink {
+  --color-paper-light: #f7f7fa;
+  --color-paper-deep: #a6a6bd;
+  --color-paper: #ebebf2;
+  --color-ink-line: #ffffff1f;
+}
+/*
+ * The fills are literals, on purpose. They used to be `var(--color-paper-light)`, which on these
+ * elements is the *flipped* near-white declared just above, so `.bg-ink text-paper` was a pale fill with
+ * pale type (about 1.1:1). The panel keeps its dark fill and the flipped tokens keep type light:
+ * #f7f7fa on #232b42 is 13.1:1, #ebebf2 (text-paper) 11.8:1, 60% type 5.7:1.
+ */
+[data-mode="genz"] .ink-block {
+  background-color: #1b2133;
+  color: #f7f7fa;
+}
+/*
+ * `.bg-ink` is used for dark panels and for small selected pills and badges. Both take the same raised
+ * navy with light type. It yields to a `hover:bg-*` class while hovered (the saffron hover then takes
+ * dark type, 5.3:1), and a pill that hides its edge with `border-transparent` gets a visible rim. An
+ * element with no content (a progress segment or dot) is a graphic, not a surface, and stays light.
+ */
+[data-mode="genz"] .bg-ink:not(:empty):is(:not([class*="hover:bg-"]), :not(:hover)) {
+  background-color: #232b42;
+}
+[data-mode="genz"] .bg-ink.border-transparent:not(:empty) {
+  border-color: rgb(255 255 255 / 0.38);
+}
+[data-mode="genz"] .bg-ink:empty {
+  background-color: var(--color-ink);
+}
+[data-mode="genz"] .bg-ink[class*="hover:bg-saffron"]:hover {
+  color: #14161f;
+}
+/*
+ * Controls inside those panels that paint their own inverse fill (`!bg-ink !text-paper`) read the
+ * flipped --color-paper for their type, which is light on a light fill. Give them the page's real paper
+ * again. Plain light fills (`bg-paper-light`, `bg-paper`, `bg-white`) are light in here too, so their
+ * `text-ink*` type gets the paper register's dark ink. `.btn-dark` already states its colour literally.
+ */
+[data-mode="genz"]
+  :is(.ink-block, .gradient-ink, .bg-ink)
+  :is([class~="!bg-ink"], [class~="bg-ink!"]) {
+  --color-paper: #0d0f15;
+  --color-paper-light: #171c2a;
+  --color-paper-deep: #272f45;
+}
+[data-mode="genz"]
+  :is(.ink-block, .gradient-ink, .bg-ink)
+  :is(.bg-paper-light, .bg-paper, .bg-white):not(.bg-ink) {
+  --color-ink: #1b2230;
+  --color-ink-soft: #454b5c;
+  --color-ink-mute: #5c6171;
+}
+
+/*
+ * The footer card in the dark register.
+ *
+ * `.ink-block` above fills itself with the *flipped* --color-paper-light (a pale
+ * #f7f7fa) and sets near-white type on it: the footer's links were 1.0:1 on their
+ * own card. The footer is the last card on the page, so it takes the dark elevation
+ * ladder instead: a literal card fill one rung above the page, a lit top rim and a
+ * hairline, with the type tokens flipped to light so every `text-paper-light/NN`
+ * class inside keeps reading as light (10.3:1 at 80%, 6.4:1 at 60%).
+ */
+[data-mode="genz"] .ink-block.footer-card {
+  --color-paper-light: #f4f3ef;
+  --color-paper-deep: #a6a6bd;
+  --color-paper: #ebebf2;
+  --color-ink-line: #ffffff1f;
+  background-color: #171c2a;
+  background-image:
+    radial-gradient(48rem 26rem at 0% 0%, rgb(240 90 34 / 0.1), transparent 62%),
+    radial-gradient(38rem 24rem at 100% 100%, rgb(63 184 195 / 0.08), transparent 60%);
+  color: #f4f3ef;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.07),
+    0 0 0 1px #2d3242;
+}
+.footer-card a {
+  text-underline-offset: 3px;
+}
+.footer-card a:hover {
+  text-decoration: underline;
+}
+
+/*
+ * The sign-in panel, which in Gen Z had stopped being a panel.
+ *
+ * The page there is rgb(14 16 22) and `.ink-block` is rgb(23 26 36): nine
+ * levels apart in each channel, which is not an edge anybody can see. The
+ * block carrying the whole left half of the route read as empty space with
+ * some shapes floating in it. A little more lift and a hairline give it a
+ * boundary without turning it into a card.
+ */
+[data-mode="genz"] .auth-panel {
+  background-color: #1d2130;
+  box-shadow:
+    inset 0 0 0 1px #ffffff14,
+    0 30px 90px -50px #000;
+}
+
+[data-mode="genz"] ::-webkit-scrollbar-track {
+  background: var(--color-paper-dim);
+}
+[data-mode="genz"] ::-webkit-scrollbar-thumb {
+  background: #2c3040;
+  border-color: var(--color-paper-dim);
+}
+[data-mode="genz"] select option,
+[data-mode="genz"] select optgroup {
+  background-color: var(--color-paper-light);
+  color: #f3f2ee;
+}
+select option:checked,
+select option:hover {
+  background-color: var(--color-saffron-500);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAPER REGISTER — components
+
+   The tokens above give this register cream, ink and terracotta. These
+   rules give it its manners, which is the part a palette cannot carry:
+   things sit rather than hover, the primary action is a block of ink,
+   corners are nearly square, and nothing moves unless you touch it.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* A sheet on paper lifts by two pixels, not four: the rule around it darkens
+   and a soft shadow arrives under it. */
+[data-mode="millennial"] .card {
+  box-shadow: var(--shadow-card);
+}
+[data-mode="millennial"] .card:not(.card-reveal):hover,
+[data-mode="millennial"] .card:not(.card-reveal):has(:focus-visible) {
+  transform: translateY(-2px);
+}
+[data-mode="millennial"] .card:hover,
+[data-mode="millennial"] .card:has(:focus-visible) {
+  border-color: var(--color-ink-line-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+/* The primary action is set in ink, the way a printed page sets its one
+   dark block. Terracotta stays for everything around it — two solid reds
+   arguing on cream is a poster, not an interface. */
+[data-mode="millennial"] .btn-primary {
+  background-color: var(--color-ink);
+  color: var(--color-paper-light);
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-primary:hover {
+  background-color: #2b3344;
+  transform: none;
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-primary:active {
+  transform: scale(0.99);
+}
+[data-mode="millennial"] .btn-primary:disabled:hover,
+[data-mode="millennial"] .btn-primary[aria-disabled="true"]:hover {
+  background-color: var(--color-ink);
+}
+
+[data-mode="millennial"] .btn-ghost {
+  border-color: var(--color-ink);
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-ghost:hover {
+  border-color: var(--color-ink);
+  background-color: var(--color-paper-dim);
+  transform: none;
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-ghost:active {
+  transform: scale(0.99);
+}
+
+[data-mode="millennial"] .chip {
+  border-color: var(--color-ink-line);
+}
+/* A chosen filter is filled with ink, not with the accent: on cream the
+   accent fill at chip size is a highlighter stripe. */
+[data-mode="millennial"] .filter-pill[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  background-color: var(--color-ink);
+  color: var(--color-paper-light);
+}
+
+[data-mode="millennial"] .input:focus,
+[data-mode="millennial"] .input:focus-visible {
+  box-shadow: 0 0 0 3px rgb(168 37 29 / 0.16);
+}
+
+/* The navigation is a bar on a page rather than a capsule floating over
+   one. Same component, same links, same order. */
+[data-mode="millennial"] .nav-island {
+  border-radius: var(--radius-control);
+  border-color: var(--color-ink-line);
+  box-shadow: var(--shadow-card);
+}
+
+/*
+   The voice.
+
+   Fraunces at 600, barely tracked, is a serif behaving like print;
+   Bricolage at 800 and -3.2% is a grotesque shouting across a room. This
+   is the single largest difference between the two registers and it costs
+   four declarations. Body copy and figures are untouched in both.
+*/
+[data-mode="millennial"] .font-display,
+[data-mode="millennial"] .font-editorial {
+  /* 650 rather than 600: Newsreader sets a shade lighter than Fraunces did
+     at the same number, and most headings on this site are 18–20px, where
+     a serif needs the weight to hold its own against the body text. */
+  font-weight: 650;
+  letter-spacing: -0.006em;
+}
+[data-mode="genz"] .font-display,
+[data-mode="genz"] .font-editorial {
+  font-weight: 800;
+  letter-spacing: -0.032em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THE APP RAIL'S COLUMN (see AppRail.tsx)
+
+   The page is centred inside 80rem with a 2.5rem gutter, so a rail at
+   `left: 0` is nowhere near it: on a 1920px screen the rail ended at
+   240px and the first word of the page began at 480. The rail now starts
+   where the page's own text starts, and the page is indented from inside
+   its container rather than by padding the wrapper — padding the wrapper
+   re-centres the container, which is what opened the gap in the first
+   place.
+
+   `--rail-inset` is set by the rail itself, and only while it is drawn.
+   Both rules below are inert without it, so they can apply everywhere.
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1024px) {
+  .app-rail {
+    /* 100%, not 100vw: a fixed element resolves percentages against the
+       viewport without its scrollbar, which is the same box the centred
+       container is laid out in. 100vw includes the scrollbar and put the
+       rail five pixels to the right of the text column it belongs to. */
+    left: calc(max(0px, (100% - 80rem) / 2) + 2.5rem);
+    top: calc(var(--nav-h) + 2.25rem);
+    bottom: 0;
+    /* A column rule, which is what separates two columns on a page. The
+       old treatment — a tinted panel with a blurred backdrop running the
+       full height of the window — was a sidebar pretending to be chrome. */
+    border-right: 1px solid var(--color-ink-line);
+  }
+
+  .app-main .container-x {
+    padding-left: calc(2.5rem + var(--rail-inset, 0rem));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOW DATA — [data-data="low"]
+
+   For a member counting a data pack, on a connection that drops. Set
+   by hand in Settings, or answered for them at first paint from the
+   browser's own Save-Data flag and a 2G connection.
+
+   The rule is that it removes weight and never information. Every
+   word, price, date, link and control is exactly where it was. What
+   goes is the part of the page that is only there to look at:
+   photographs, the ambient field behind the dark register, and the
+   animation that costs a cheap phone battery to paint.
+
+   `content-visibility` is the quiet one: it lets the browser skip
+   layout and paint for anything still below the fold, which on a
+   long catalogue is most of the page.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* The photograph does not load. The box, its ratio and its tint stay,
+   so nothing jumps when the rest of the page settles. */
+[data-data="low"] .media img,
+[data-data="low"] img[data-decorative="true"] {
+  display: none;
+}
+
+/* Anything that exists only to move. */
+[data-data="low"] .depth-field,
+[data-data="low"] .halftone,
+[data-data="low"] .jaali,
+[data-data="low"] .ikat {
+  display: none;
+}
+
+[data-data="low"] *,
+[data-data="low"] *::before,
+[data-data="low"] *::after {
+  animation-duration: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0s !important;
+}
+
+/* A blur is cheap to write and expensive to paint, and on the phones
+   this is for it is the difference between a page that scrolls and
+   one that stutters. */
+[data-data="low"] .glass,
+[data-data="low"] .liquid,
+[data-data="low"] .nav-island {
+  backdrop-filter: none;
+}
+
+[data-data="low"] .card-grid > *,
+[data-data="low"] .stack > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+
+/* ── Liquid glass ───────────────────────────────────────────────
+   Gen Z only, and deliberately so. The dark register already paints a
+   moving field behind the page (.depth-field, below) — three blurred
+   colour orbs and a drifting grid. A translucent surface over that has
+   something worth sampling, which is the entire premise of the
+   material. Millennial paints no such field, so the same rule there
+   would buy an expensive blur over a flat cream ground and look like
+   nothing at all.
+
+   Four things separate glass from a tinted box, and all four are here:
+   a blur with the saturation lifted so colour bleeds through rather
+   than greying out; a bright specular line along the top edge that
+   fades before it reaches the far corner, because light catching a
+   curved surface is never an even 1px rule; a dimmer answering line
+   along the bottom; and an inner ring of light just inside the border.
+
+   It is a separate class, not a redefinition of .glass — .glass is used
+   on both registers and changing it would leak into Millennial through
+   the partial override at the foot of this file. */
+[data-mode="genz"] .liquid {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-card);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background-color: color-mix(in srgb, var(--color-paper-light) 55%, transparent);
+  background-image: linear-gradient(
+    160deg,
+    rgb(255 255 255 / 0.07),
+    rgb(255 255 255 / 0.015) 38%,
+    transparent 65%
+  );
+  backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 -1px 0 rgb(255 255 255 / 0.04),
+    var(--shadow-float);
+}
+
+/* The specular line. Brightest a fifth of the way along, gone by the
+   far edge — an even line would read as a border, which is the thing
+   this is not. */
+[data-mode="genz"] .liquid::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.34) 18%,
+    rgb(255 255 255 / 0.09) 55%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Raising the hover state lifts the light, not the box. A transform
+   here would re-root the backdrop and make the blur visibly re-sample
+   mid-transition, which is why .liquid never borrows .card's lift. */
+[data-mode="genz"] .liquid:hover,
+[data-mode="genz"] .liquid:has(:focus-visible) {
+  border-color: rgb(255 255 255 / 0.18);
+  background-color: rgb(24 28 38 / 0.58);
+  /* .card lifts 4px on hover. A transform makes the element a containing
+     block and re-roots its backdrop, so the blur re-samples visibly
+     through the transition. Composing `card liquid` is worth it for the
+     Millennial fallback; the lift is the one part that cannot come. */
+  transform: none;
+}
+
+/* With motion stilled the depth field is not painted, so there is
+   nothing behind the surface to sample and the blur buys nothing. Pay
+   for a solid tint instead of a translucent one over an empty ground. */
+[data-motion="reduced"][data-mode="genz"] .liquid {
+  background-color: color-mix(in srgb, var(--color-paper-light) 92%, transparent);
+  backdrop-filter: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-mode="genz"] .liquid {
+    background-color: color-mix(in srgb, var(--color-paper-light) 92%, transparent);
+    backdrop-filter: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOTION
+   ═══════════════════════════════════════════════════════════════ */
+
+/*
+   The register mark's entrance (see RegisterMark.tsx).
+
+   Both run once and stop. `mark-draw` walks a ring's dash offset back to
+   zero so the circle draws itself outside in; `mark-print` lands a
+   block-print diamond on the page. Neither loops, and both are switched
+   off in the component when motion is stilled — these are entrances, and
+   the mark is finished without them.
+*/
+/*
+   The dashboard's one loop, and only in the dark register.
+
+   Six seconds, nine percent of a saffron ring. Anything faster reads as a
+   notification and starts to nag; anything stronger competes with the
+   button inside the card. On paper nothing loops at all, so this rule is
+   scoped rather than themed.
+*/
+@keyframes nba-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(255 106 46 / 0);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgb(255 106 46 / 0.09);
+  }
+}
+
+[data-mode="genz"] .nba-breathe {
+  animation: nba-breathe 6s ease-in-out infinite;
+}
+[data-motion="reduced"] .nba-breathe {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nba-breathe {
+    animation: none;
+  }
+}
+
+@keyframes mark-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes mark-print {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="mark-draw"] {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  [style*="mark-print"] {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+.animate-float-late {
+  animation: float-y 7s ease-in-out 1.2s infinite;
+}
+
+/* Press feedback: the surface meets your finger at once. */
+.btn-primary:active,
+.btn-ghost:active,
+.btn-dark:active,
+.filter-pill:active,
+button.card:active,
+a.card:active {
+  transform: scale(0.975);
+  transition-duration: 90ms;
+}
+
+/* Touch has no un-hover; do not leave things lifted. */
+@media (hover: none) {
+  .btn-primary:hover,
+  .btn-ghost:hover,
+  .btn-dark:hover {
+    transform: none;
+    box-shadow: var(--shadow-soft);
+  }
+  .card:hover {
+    transform: none;
+  }
+}
+
+/* Disabled, said once. */
+button:disabled,
+a[aria-disabled="true"],
+.btn-primary:disabled,
+.btn-ghost:disabled,
+.filter-pill:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+button:disabled:hover,
+.btn-primary:disabled:hover,
+.btn-ghost:disabled:hover,
+.filter-pill:disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hover-panel {
+    transition: none;
+  }
+}
+
+/*
+   The phone's bottom bar is fixed, so the page has to end above it. One
+   variable, set on the body when the bar is mounted, keeps every page's
+   bottom padding honest instead of each one guessing.
+*/
+body {
+  padding-bottom: var(--bottom-bar, 0px);
+}
+
+@keyframes media-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* A toast arrives from the edge it sits on, and does not move at all for
+   anyone who asked for less motion. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+[data-motion="reduced"] [role="status"],
+[data-motion="reduced"] [role="alert"] {
+  animation: none !important;
+}
+
+/* Right-to-left scripts: Urdu, Kashmiri, Sindhi. */
+[dir="rtl"] .link-sweep::after {
+  transform-origin: left;
+}
+[dir="rtl"] .dropcap::first-letter {
+  float: right;
+  margin-left: 0.75rem;
+  margin-right: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCESSIBILITY
+   Independent switches: contrast, text size, dyslexia face, motion.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-contrast="high"] {
+  --color-paper: #ffffff;
+  --color-paper-light: #ffffff;
+  --color-paper-dim: #f2f2f2;
+  --color-paper-deep: #d9d9d9;
+  --color-ink: #000000;
+  --color-ink-soft: #101010;
+  --color-ink-mute: #303030;
+  --color-ink-line: #000000;
+  --color-saffron-500: #a3260a;
+  --color-saffron-600: #7d1c06;
+  --shadow-soft: none;
+  --shadow-raised: none;
+  --shadow-float: none;
+  --shadow-accent: none;
+  --shadow-card: none;
+  --shadow-lift: none;
+}
+[data-contrast="high"][data-mode="genz"] {
+  --color-paper: #000000;
+  --color-paper-light: #0a0a0a;
+  --color-paper-dim: #050505;
+  --color-paper-deep: #1a1a1a;
+  --color-ink: #ffffff;
+  --color-ink-soft: #f0f0f0;
+  --color-ink-mute: #d0d0d0;
+  --color-ink-line: #ffffff;
+  --color-saffron-500: #ff8a4c;
+  --color-saffron-600: #ffab7d;
+}
+[data-contrast="high"] body {
+  background-image: none;
+}
+[data-contrast="high"] body::after {
+  display: none;
+}
+[data-contrast="high"] .card,
+[data-contrast="high"] .panel,
+[data-contrast="high"] .glass,
+[data-contrast="high"] .card-flat,
+[data-contrast="high"] .input,
+[data-contrast="high"] .btn-ghost,
+[data-contrast="high"] .chip,
+[data-contrast="high"] .liquid,
+[data-contrast="high"] .nav-island {
+  border-width: 2px;
+  box-shadow: none;
+  backdrop-filter: none;
+  background-image: none;
+}
+[data-contrast="high"] .liquid::before {
+  display: none;
+}
+[data-contrast="high"] .btn-primary {
+  background-image: none;
+  background-color: var(--color-saffron-500);
+  border: 2px solid var(--color-ink);
+}
+[data-contrast="high"] .halftone,
+[data-contrast="high"] .ledger,
+[data-contrast="high"] .jaali,
+[data-contrast="high"] .ikat {
+  display: none;
+}
+[data-contrast="high"] :focus-visible {
+  outline: 3px solid var(--color-saffron-500);
+  outline-offset: 3px;
+}
+
+[data-dyslexia="on"] body,
+[data-dyslexia="on"] .font-body,
+[data-dyslexia="on"] .font-display,
+[data-dyslexia="on"] .font-editorial {
+  font-family:
+    "OpenDyslexic", "Lexie Readable", "Comic Sans MS", "Trebuchet MS", Verdana, sans-serif !important;
+  letter-spacing: 0.045em;
+  word-spacing: 0.16em;
+  line-height: 1.85;
+}
+[data-dyslexia="on"] p,
+[data-dyslexia="on"] li {
+  max-width: 66ch;
+}
+[data-dyslexia="on"] .uppercase {
+  text-transform: none;
+}
+
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+[data-motion="reduced"] .animate-marquee {
+  animation: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DEPTH FIELD — the dark register's ambient room (see DepthField.tsx)
+   ═══════════════════════════════════════════════════════════════ */
+
+.depth-field {
+  position: fixed;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  perspective: 900px;
+  --px: 0;
+  --py: 0;
+}
+[data-mode="millennial"] .depth-field,
+[data-motion="reduced"] .depth-field {
+  display: none;
+}
+.depth-field > span {
+  position: absolute;
+  display: block;
+  will-change: transform;
+  transform: translate3d(calc(var(--px) * var(--depth)), calc(var(--py) * var(--depth)), 0);
+}
+.df-orb {
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: calc(1 + var(--hot, 0) * 0.35);
+  transition: opacity 200ms linear;
+}
+.df-orb-a {
+  top: 2%;
+  left: 6%;
+  width: 34rem;
+  height: 30rem;
+  background: radial-gradient(circle, rgb(240 90 34 / 0.22), transparent 68%);
+}
+.df-orb-b {
+  top: 8%;
+  right: 2%;
+  width: 30rem;
+  height: 28rem;
+  background: radial-gradient(circle, rgb(63 184 195 / 0.16), transparent 68%);
+}
+.df-orb-c {
+  bottom: 0%;
+  left: 38%;
+  width: 28rem;
+  height: 24rem;
+  background: radial-gradient(circle, rgb(140 156 240 / 0.12), transparent 70%);
+}
+.depth-field > .df-grid {
+  inset: 40% -20% -30%;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 4.5rem 4.5rem;
+  transform: translate3d(calc(var(--px) * var(--depth)), calc(var(--py) * var(--depth)), 0)
+    rotateX(74deg);
+  transform-origin: 50% 0%;
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.7), transparent 72%);
+  opacity: calc(0.85 + var(--hot, 0) * 0.5);
+  transition: opacity 240ms linear;
+}
+.depth-field > .df-cursor {
+  top: 0;
+  left: 0;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle,
+    rgb(255 122 69 / 0.18) 0%,
+    rgb(240 90 34 / 0.08) 38%,
+    transparent 68%
+  );
+  opacity: calc(0.55 + var(--hot, 0) * 0.45);
+  transform: translate3d(
+      calc(var(--mx, -9999) * 1px + 10vw - 16rem),
+      calc(var(--my, -9999) * 1px + 10vh - 16rem),
+      0
+    )
+    scale(calc(1 + var(--hot, 0) * 0.22));
+}
+@media (hover: none) {
+  .df-cursor {
+    opacity: calc(var(--hot, 0) * 0.6);
+  }
+}
+[data-motion="reduced"] .df-cursor {
+  display: none;
+}
+@keyframes df-rumble {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  18% {
+    transform: translate3d(-5px, 3px, 0) rotate(-0.25deg);
+  }
+  38% {
+    transform: translate3d(4px, -4px, 0) rotate(0.22deg);
+  }
+  58% {
+    transform: translate3d(-3px, 2px, 0) rotate(-0.14deg);
+  }
+  78% {
+    transform: translate3d(2px, -1px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.depth-field.df-rumble {
+  animation: df-rumble 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .depth-field {
+    display: none;
+  }
+}
+
+/* Tilt card (kept for components that still use it). */
+.tilt-scene {
+  perspective: 1100px;
+  perspective-origin: 50% 50%;
+}
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(var(--tx, 0) * var(--max, 6deg)))
+    rotateX(calc(var(--ty, 0) * var(--max, 6deg) * -1));
+  will-change: transform;
+}
+.tilt-content {
+  transform: translateZ(38px);
+  transform-style: preserve-3d;
+}
+.tilt-sheen {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  transform: translateZ(20px);
+  background: radial-gradient(
+    22rem 22rem at calc(50% + var(--tx, 0) * 42%) calc(50% + var(--ty, 0) * 42%),
+    rgb(255 255 255 / 0.14),
+    transparent 60%
+  );
+}
+[data-motion="reduced"] .tilt-card,
+[data-motion="reduced"] .tilt-content {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tilt-card,
+  .tilt-content {
+    transform: none;
+  }
+}
+
+/* Skip link: first in the tab order, invisible until focused. */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-radius: var(--radius-control);
+  padding: 0.7rem 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MILLENNIAL REGISTER — [data-mode="millennial"]
+   The calm one. Warm cream paper, a serif headline face, navy ink,
+   hairline rules where the other register uses shadows, squarer
+   corners, and motion that mostly sits still. Same structure as
+   Gen Z; a different personality.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-mode="millennial"] {
+  --color-field-line: #8b8474;
+  --color-danger: #a8251d;
+  --color-paper: #f4efe6;
+  --color-paper-light: #fbf8f2;
+  --color-paper-dim: #ece5d8;
+  --color-paper-deep: #dcd2c0;
+
+  --color-ink: #1b2230;
+  --color-ink-soft: #3d4454;
+  /* 5.9:1 on paper-light, 5.0:1 on paper-dim. #6f7382 sat just under 4.5. */
+  --color-ink-mute: #5a5e6e;
+  --color-ink-line: #d9d0c0;
+  --color-ink-700: #2c3445;
+  --color-ink-800: #232a3a;
+  --color-ink-900: #1f2634;
+  --color-ink-950: #1b2230;
+
+  --color-saffron-50: #fbeee4;
+  --color-saffron-100: #f6dcc9;
+  --color-saffron-200: #e9b391;
+  --color-saffron-300: #de6a37;
+  --color-saffron-400: #cd4a17;
+  --color-saffron-500: #b23509;
+  --color-saffron-600: #9e2f0a;
+  --color-saffron-700: #7e2507;
+  --color-saffron-glow: #f0895e;
+
+  --color-emeraldx-400: #23684a;
+  --color-peacock: #1d6a72;
+  --color-brand-navy: #1b2230;
+
+  /*
+     Newsreader, where Fraunces used to be.
+
+     Cream paper + a Fraunces headline + a terracotta accent is one of the
+     handful of looks that generated design has worn through, and this
+     register was wearing it exactly. Newsreader is an editorial serif with
+     the same manners and none of that association — and it is variable from
+     200 to 800, which matters here: 285 of this codebase's display-face
+     usages are headings at 18–20px, where a serif needs real weight. A
+     single-weight display serif would have looked considered on the hero and
+     thin everywhere else.
+
+     The local fallbacks go too. "Iowan Old Style" and "Palatino Linotype"
+     ship on macOS and Windows respectively, so the same page was set in
+     three different faces depending on whose machine it loaded on — which is
+     not a fallback, it is three designs.
+  */
+  --font-display: "Newsreader", Georgia, serif;
+  --font-editorial: "Newsreader", Georgia, serif;
+
+  --radius: 0.5rem;
+  --radius-card: 0.625rem;
+  --radius-control: 0.375rem;
+  --radius-pill: 0.375rem;
+
+  /* Depth comes from rules, not shadows. */
+  --shadow-soft: 0 1px 0 rgb(27 34 48 / 0.04);
+  --shadow-raised: 0 1px 2px rgb(27 34 48 / 0.06), 0 8px 20px -12px rgb(27 34 48 / 0.12);
+  --shadow-float: 0 2px 4px rgb(27 34 48 / 0.06), 0 18px 40px -20px rgb(27 34 48 / 0.18);
+  --shadow-accent: 0 8px 20px -10px rgb(27 34 48 / 0.35);
+
+  /* A sheet on a desk: a lit top edge, a hairline of contact shadow, and a
+     long soft one that only arrives when the sheet is lifted. */
+  --color-ink-line-strong: #bfb39d;
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.7), 0 1px 2px rgb(27 34 48 / 0.05);
+  --shadow-lift:
+    inset 0 1px 0 rgb(255 255 255 / 0.8), 0 2px 4px rgb(27 34 48 / 0.06),
+    0 12px 24px -14px rgb(27 34 48 / 0.22);
+}
+
+[data-mode="millennial"] body {
+  line-height: 1.65;
+}
+[data-mode="millennial"] body::after {
+  opacity: 0.045;
+}
+
+/* Serif display: optical size on, moderate weight, a touch of air. */
+[data-mode="millennial"] .font-display,
+[data-mode="millennial"] h1,
+[data-mode="millennial"] h2,
+[data-mode="millennial"] h3,
+[data-mode="millennial"] .section-title,
+[data-mode="millennial"] .stat-figure {
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+[data-mode="millennial"] .type-hero,
+[data-mode="millennial"] .type-xl {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+[data-mode="millennial"] .section-title {
+  line-height: 1.06;
+}
+/* Small serif reads better a little heavier. */
+[data-mode="millennial"] .card h3,
+[data-mode="millennial"] .font-display.text-\[1\.15rem\],
+[data-mode="millennial"] .font-display.text-\[1\.1rem\],
+[data-mode="millennial"] .font-display.text-\[1\.05rem\] {
+  font-weight: 600;
+}
+
+/* Eyebrow: a short rule instead of a dot. */
+[data-mode="millennial"] .kicker::before {
+  width: 18px;
+  height: 1.5px;
+  border-radius: 0;
+}
+
+/* Surfaces: hairline first, no lift. */
+[data-mode="millennial"] .card,
+[data-mode="millennial"] .panel,
+[data-mode="millennial"] .card-flat {
+  box-shadow: none;
+}
+[data-mode="millennial"] .card:hover,
+[data-mode="millennial"] .card:has(:focus-visible) {
+  border-color: rgb(27 34 48 / 0.35);
+  box-shadow: none;
+}
+[data-mode="millennial"] .card:not(.card-reveal):hover,
+[data-mode="millennial"] .card:not(.card-reveal):has(:focus-visible) {
+  transform: none;
+}
+[data-mode="millennial"] .glass {
+  background-color: rgb(251 248 242 / 0.9);
+  box-shadow: none;
+}
+
+/* Navy is the action colour; saffron is reserved for emphasis. */
+[data-mode="millennial"] .btn-primary {
+  background-color: var(--color-ink);
+  color: var(--color-paper-light);
+  box-shadow: none;
+  letter-spacing: 0.01em;
+}
+[data-mode="millennial"] .btn-primary:hover {
+  background-color: var(--color-saffron-500);
+  transform: none;
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-ghost {
+  background-color: transparent;
+  border-color: rgb(27 34 48 / 0.3);
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-ghost:hover {
+  background-color: var(--color-paper-light);
+  border-color: var(--color-ink);
+  transform: none;
+  box-shadow: none;
+}
+[data-mode="millennial"] .btn-dark:hover {
+  transform: none;
+}
+[data-mode="millennial"] .filter-pill[aria-pressed="true"] {
+  background-color: var(--color-ink);
+}
+[data-mode="millennial"] .chip {
+  background-color: transparent;
+  border-color: var(--color-ink-line);
+}
+[data-mode="millennial"] .chip-accent {
+  background-color: transparent;
+  border-color: var(--color-saffron-200);
+}
+[data-mode="millennial"] .sticker {
+  box-shadow: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+[data-mode="millennial"] .badge-soft {
+  box-shadow: none;
+  border: 1px solid var(--color-ink-line);
+}
+[data-mode="millennial"] .input {
+  background-color: var(--color-paper-light);
+}
+[data-mode="millennial"] .input:focus,
+[data-mode="millennial"] .input:focus-visible {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px rgb(27 34 48 / 0.1);
+}
+
+/* The masthead: a ruled bar rather than a floating pill. */
+[data-mode="millennial"] .nav-island {
+  border-radius: var(--radius-card);
+  background-color: rgb(251 248 242 / 0.88);
+  border-color: var(--color-ink-line);
+  box-shadow: 0 1px 0 rgb(27 34 48 / 0.05);
+}
+[data-mode="millennial"] .nav-link,
+[data-mode="millennial"] .nav-icon {
+  border-radius: var(--radius-control);
+}
+[data-mode="millennial"] .nav-link[data-active="true"] {
+  color: var(--color-saffron-500);
+}
+
+/* The dark band is navy with a warm light in it. */
+[data-mode="millennial"] .ink-block {
+  background-color: #1b2230;
+  background-image:
+    radial-gradient(50rem 30rem at 0% 0%, rgb(191 58 13 / 0.18), transparent 62%),
+    radial-gradient(40rem 26rem at 100% 100%, rgb(240 137 94 / 0.1), transparent 60%);
+  color: #f4efe6;
+}
+[data-mode="millennial"] .gradient-warm {
+  background-image: linear-gradient(140deg, #fbf8f2 0%, #f6e9dc 100%);
+}
+[data-mode="millennial"] .tonal {
+  background-color: var(--color-paper-dim);
+}
+
+/* Paper textures: ruled lines, the way a ledger actually is. */
+[data-mode="millennial"] .ledger {
+  background-image: linear-gradient(rgb(27 34 48 / 0.08) 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+[data-mode="millennial"] .halftone {
+  color: #1b2230;
+}
+
+/* Stiller motion: nothing floats, nothing rises on hover. */
+[data-mode="millennial"] .animate-float,
+[data-mode="millennial"] .animate-float-late {
+  animation: none;
+}
+[data-mode="millennial"] .rail > * {
+  scroll-snap-align: start;
+}
+[data-mode="millennial"] ::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   POLISH — sizes, busy buttons, tap targets, the phone's bottom bar
+   ═══════════════════════════════════════════════════════════════ */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+a,
+button,
+[role="button"],
+summary,
+label,
+select {
+  touch-action: manipulation;
+}
+@media (pointer: coarse) {
+  /* No hover on a finger, so the press has to carry the feedback. */
+  .card:active,
+  .btn-primary:active,
+  .btn-ghost:active {
+    transition-duration: 60ms;
+  }
+}
+
+@layer components {
+  /* Real sizes instead of 263 `!py-2 !text-[13px]` overrides. `.btn-sm` is 36px:
+     give it `.tap` where it sits on a touch screen to reach 44px. */
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    min-height: 2.25rem;
+  }
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 0.9375rem;
+    min-height: 3.25rem;
+  }
+  /* The register's own pill radius: round in dark, a rounded rule on paper. */
+  .pill {
+    border-radius: var(--radius-pill);
+  }
+  /* A 44px hit area around a control that is drawn smaller. */
+  .tap {
+    position: relative;
+  }
+  .tap::after {
+    content: "";
+    position: absolute;
+    inset: -0.5rem;
+  }
+  .section-y {
+    padding-block: var(--section-y);
+  }
+
+  /* Busy: the label stays in layout, so the button never changes width. */
+  .btn-primary[aria-busy="true"],
+  .btn-ghost[aria-busy="true"],
+  .btn-dark[aria-busy="true"] {
+    position: relative;
+    pointer-events: none;
+    color: transparent;
+    --busy-fg: #fff;
+  }
+  .btn-primary[aria-busy="true"] > *,
+  .btn-ghost[aria-busy="true"] > *,
+  .btn-dark[aria-busy="true"] > * {
+    opacity: 0;
+  }
+  .btn-primary[aria-busy="true"]::after,
+  .btn-ghost[aria-busy="true"]::after,
+  .btn-dark[aria-busy="true"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 1.1em;
+    height: 1.1em;
+    border-radius: 50%;
+    border: 2px solid var(--busy-fg);
+    border-right-color: transparent;
+    animation: btn-spin 0.7s linear infinite;
+  }
+  .btn-ghost[aria-busy="true"] {
+    --busy-fg: var(--color-ink);
+  }
+  .btn-dark[aria-busy="true"] {
+    --busy-fg: var(--color-paper);
+  }
+
+  /* The phone's bottom bar: frosted over the page, a lit hairline on its
+     top edge. Blur is a per-frame cost on a mid-range phone, so a touch
+     screen gets the solid surface instead. */
+  .bottom-bar {
+    background-color: color-mix(in srgb, var(--color-paper-light) 92%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+  }
+  .bottom-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--color-saffron-500) 38%, transparent),
+      transparent
+    );
+  }
+  @media (pointer: coarse) {
+    .bottom-bar {
+      backdrop-filter: none;
+      background-color: var(--color-paper-light);
+    }
+  }
+}
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+[data-mode="genz"] .btn-primary[aria-busy="true"] {
+  --busy-fg: #14161f;
+}
+[data-mode="millennial"] .btn-primary[aria-busy="true"] {
+  --busy-fg: var(--color-paper-light);
+}
+[data-contrast="high"] .bottom-bar {
+  backdrop-filter: none;
+  background-color: var(--color-paper-light);
+}
+[data-contrast="high"] .bottom-bar::before {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM OVERLAY DOCK (EvolutionNotice, StorageNotice)
+
+   One bottom overlay at a time (notice.ts queue). On a phone it sits
+   just above the bottom bar, on a laptop at the bottom-left of the
+   content area (right of the pinned rail). It never takes pointer
+   events itself, only the notice or bar inside it does.
+   ═══════════════════════════════════════════════════════════════ */
+.overlay-dock,
+.evo-notice-live.overlay-dock {
+  position: fixed;
+  z-index: 60;
+  left: 0.75rem;
+  right: 0.75rem;
+  width: auto;
+  max-width: 28rem;
+  margin-inline: auto;
+  bottom: calc(var(--bottom-bar, 0px) + 0.5rem);
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .overlay-dock,
+  .evo-notice-live.overlay-dock {
+    right: auto;
+    margin-inline: 0;
+    left: calc(var(--rail-inset, 0px) + 1.25rem);
+    width: min(28rem, calc(100vw - var(--rail-inset, 0px) - 2.5rem));
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Notice actions are real targets: 44px tall, not a text link's 20. */
+.overlay-dock .evo-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.4rem;
+}
+.overlay-dock .evo-dismiss {
+  justify-content: center;
+  min-width: 2.75rem;
+}
+.overlay-dock .evo-notice-actions {
+  gap: 0.1rem;
+  margin-inline-start: auto;
+}
+.overlay-dock .evo-notice {
+  padding-block: 0.35rem;
+}
+
+/* The privacy bar: one line, a pill on the card ladder. */
+.privacy-bar {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.9rem;
+  border: 1px solid var(--color-ink-line);
+  border-radius: 999px;
+  background: var(--color-paper-light);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-float);
+  font-family: var(--font-body, inherit);
+  font-size: 0.8125rem;
+  line-height: 1.25;
+  animation: dock-in 0.2s ease-out both;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.privacy-bar-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+}
+.privacy-bar-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--color-ink-soft);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.privacy-bar-btn:hover {
+  color: var(--color-ink);
+}
+.privacy-bar-btn--primary {
+  background: var(--color-saffron-500);
+  color: #fff;
+}
+.privacy-bar-btn--primary:hover {
+  color: #fff;
+  filter: brightness(1.08);
+}
+[data-mode="genz"] .privacy-bar-btn--primary,
+[data-mode="genz"] .privacy-bar-btn--primary:hover {
+  color: var(--color-on-accent);
+}
+.privacy-bar-btn:focus-visible {
+  outline: 2px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+[data-leaving] .privacy-bar {
+  opacity: 0;
+  transform: translateY(6px);
+}
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .privacy-bar {
+    animation: none;
+    transition: none;
+  }
+}
+[data-motion="reduced"] .privacy-bar {
+  animation: none;
+  transition: none;
+}
+@media (max-width: 380px) {
+  .privacy-bar {
+    padding-inline-start: 0.7rem;
+    font-size: 0.75rem;
+  }
+  .privacy-bar-btn {
+    padding-inline: 0.55rem;
+  }
+}
+
+/* The Sarthi button rides above whichever overlay is up (notice.ts publishes --overlay-h). */
+@media (max-width: 1023px) {
+  [data-sarthi-launcher],
+  button[class*="bottom-[calc(1.5rem+var(--bottom-bar"] {
+    bottom: calc(1.5rem + var(--bottom-bar, 0px) + var(--sticky-bar, 0px) + var(--overlay-h, 0px));
+  }
+}
+
+/* A count-up figure is scrolling under the button (AssistantLauncher): ease it aside until it is clear. */
+html[data-fab-yield] [data-sarthi-launcher]:not(:focus-visible),
+html[data-fab-yield] button[class*="bottom-[calc(1.5rem+var(--bottom-bar"]:not(:focus-visible) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* "Show me" scrolls a Home section into view under the fixed top bar, not behind it. */
+[data-section] {
+  scroll-margin-top: 6rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FRAME-BUDGET MODE (src/evolution/platform/frame-budget.ts)
+
+   html[data-fx] is stamped before first paint from the device's own
+   hints (memory, cores, save-data, connection) and then refined by the
+   frames the page actually drops.
+
+     full    nothing here applies.
+     lite    no grain, no backdrop blur; count-ups settle (CountUp.tsx).
+     static  lite, plus still hero art and shorter transitions.
+
+   The grain also goes on any phone-width or touch screen regardless
+   of tier: a full-viewport blend layer over a scrolling page is the
+   single most expensive thing on the first frame there.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px), (pointer: coarse) {
+  body::after {
+    display: none;
+  }
+}
+html[data-fx="lite"] body::after,
+html[data-fx="static"] body::after {
+  display: none;
+}
+html[data-fx="lite"] :is(.liquid, .glass, .nav-island),
+html[data-fx="static"] :is(.liquid, .glass, .nav-island) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* With the blur gone a half-clear fill would let the page show through: paint it solid instead. */
+html[data-fx="lite"][data-mode="genz"] :is(.liquid, .glass),
+html[data-fx="static"][data-mode="genz"] :is(.liquid, .glass) {
+  background-color: color-mix(in srgb, var(--color-paper-light) 94%, transparent);
+}
+html[data-fx="static"] .depth-field {
+  display: none;
+}
+html[data-fx="static"] .hero-visual,
+html[data-fx="static"] .hero-visual *,
+html[data-fx="static"] .hero-visual *::before,
+html[data-fx="static"] .hero-visual *::after,
+html[data-fx="static"] .animate-marquee,
+html[data-fx="static"] .nba-breathe,
+html[data-fx="static"] .evo-notice,
+html[data-fx="static"] .privacy-bar {
+  animation: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK REGISTER — "DESI STREET POSTER" (2026-10 redesign)
+
+   The dark register used to be navy, an orange glow, glass panels and
+   soft drop shadows: the look a generator reaches for first, and judges
+   read it as one. This replaces it with the visual language of an Indian
+   street — hand-painted shop boards and truck art:
+
+     ground   warm ink-black, like a painted board, never navy
+     colour   marigold for action; chilli red, leaf green and peacock
+              for labels — flat, opaque, no gradients, no glow
+     type     Teko (signboard letters) for display, Hind for reading —
+              both Indian Type Foundry, both with Devanagari
+     depth    a hard offset shadow, the way a sign-painter shades a
+              letter or a sticker sits on a wall. Never a blur.
+     shape    small corners, 2px edges, stickers that lean a little
+
+   Everything is scoped to [data-mode="genz"] and sits at the end of the
+   file so it wins over the older dark rules without editing them. The
+   light (millennial) register is untouched.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-mode="genz"] {
+  /* Fonts: the stacks are in fonts.css (html[data-mode="genz"]), which out-ranks this block. */
+
+  /* The board: warm black, warm surfaces. */
+  --color-paper: #13110e;
+  --color-paper-dim: #0d0b09;
+  --color-paper-light: #1e1a15;
+  --color-paper-deep: #2d2720;
+  --surface-raised: #27221b;
+
+  /* Bone-white paint, not screen white. ink-mute is 7.9:1 on the ground. */
+  --color-ink: #f7ecda;
+  --color-ink-soft: #e6d8c1;
+  --color-ink-mute: #bcae96;
+  --color-ink-line: #463c30;
+  --color-ink-700: #e9dcc6;
+  --color-ink-800: #f0e4d0;
+  --color-ink-900: #f4e8d5;
+  --color-ink-950: #f7ecda;
+  --color-field-line: #7d6f5c;
+
+  /* Marigold is the action colour (was electric orange). Dark label on it: 11:1. */
+  --color-saffron-electric: #ffb21e;
+  --color-saffron-50: #2a2112;
+  --color-saffron-100: #3a2c12;
+  --color-saffron-200: #6e5216;
+  --color-saffron-300: #ffcd5c;
+  --color-saffron-400: #f5a70f;
+  --color-saffron-500: #ffb21e;
+  --color-saffron-600: #ffc144;
+  --color-saffron-700: #ffd57d;
+  --color-saffron-800: #ffe3a8;
+  --color-saffron-900: #fff1d2;
+  --color-saffron-glow: #ffb21e;
+  --color-on-accent: #13110e;
+
+  /* Truck-art supporting colours: labels and data, never chrome. */
+  --color-marigold: #ffb21e;
+  --color-marigold-600: #ffc144;
+  --color-rani: #ff5a3c; /* chilli */
+  --color-peacock: #27c2b2;
+  --color-indigo: #9aa6ff;
+  --color-emeraldx-400: #4fd67c; /* leaf */
+  --color-emeraldx-500: #3cc56b;
+  --color-emeraldx-600: #2ea85a;
+  --color-brand-navy: #f7ecda;
+
+  /* Painted depth: hard offsets only. */
+  --poster-ink: #050403;
+  --shadow-soft: 2px 2px 0 0 var(--poster-ink);
+  --shadow-raised: 4px 4px 0 0 var(--poster-ink);
+  --shadow-float: 6px 6px 0 0 var(--poster-ink);
+  --shadow-accent: 4px 4px 0 0 var(--color-rani);
+  --shadow-card: 4px 4px 0 0 var(--poster-ink);
+  --shadow-lift: 6px 6px 0 0 var(--color-saffron-500);
+
+  --radius-card: 0.5rem;
+  --radius-control: 0.375rem;
+  --plate-radius: 0.5rem;
+  --plate-ground: var(--color-paper-light);
+  --plate-wash: var(--color-paper-deep);
+}
+
+/* The ground: no glow, no grain, no floating orbs. A faint halftone, like a
+   printed poster seen close, and a painted bunting strip along the top. */
+[data-mode="genz"] body {
+  background-color: var(--color-paper);
+  background-image: radial-gradient(rgb(247 236 218 / 0.045) 1px, transparent 1.2px);
+  background-size: 14px 14px;
+  background-attachment: fixed;
+}
+[data-mode="genz"] body::after {
+  display: none;
+}
+[data-mode="genz"] .depth-field {
+  display: none;
+}
+[data-mode="genz"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 6px;
+  z-index: 60;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-saffron-500) 0 28px,
+    var(--color-rani) 28px 56px,
+    var(--color-emeraldx-500) 56px 84px,
+    var(--color-peacock) 84px 112px
+  );
+}
+
+/* ── Type ── */
+[data-mode="genz"] h1,
+[data-mode="genz"] h2,
+[data-mode="genz"] .font-display,
+[data-mode="genz"] .section-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 0.92;
+}
+[data-mode="genz"] h3,
+[data-mode="genz"] h4 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+/* The big lines are painted: bone letters with a hard black shade, like a shop board. */
+[data-mode="genz"] h1 {
+  text-shadow: 3px 3px 0 var(--poster-ink);
+}
+[data-mode="genz"] .section-title {
+  font-size: clamp(2.5rem, 1.6rem + 3.2vw, 4.4rem);
+  text-shadow: 2px 2px 0 var(--poster-ink);
+}
+[data-mode="genz"] .editorial-em {
+  color: var(--color-saffron-500);
+  text-shadow: 3px 3px 0 var(--color-rani);
+}
+[data-mode="genz"] .kicker {
+  /* Ink on chilli: 5.6:1. Bone on chilli was 2.9:1. */
+  color: var(--poster-ink);
+  background: var(--color-rani);
+  padding: 0.2rem 0.6rem 0.1rem;
+  border-radius: 0.25rem;
+  letter-spacing: 0.12em;
+  box-shadow: 2px 2px 0 0 var(--poster-ink);
+  transform: rotate(-1.5deg);
+}
+[data-mode="genz"] .kicker::before {
+  background: var(--poster-ink);
+}
+
+/* ── Surfaces: a painted board with a 2px edge and a hard shadow ── */
+[data-mode="genz"] .card,
+[data-mode="genz"] .panel,
+[data-mode="genz"] .glass,
+[data-mode="genz"] .card-flat {
+  background-color: var(--color-paper-light);
+  background-image: none;
+  border: 2px solid var(--color-ink-line);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-mode="genz"] .card {
+  transition:
+    transform 0.15s var(--ease-quick),
+    box-shadow 0.15s var(--ease-quick),
+    border-color 0.15s var(--ease-quick);
+}
+[data-mode="genz"] .card:hover,
+[data-mode="genz"] .card:has(:focus-visible) {
+  background-color: var(--color-paper-light);
+  border-color: var(--color-ink);
+  box-shadow: var(--shadow-lift);
+  transform: translate(-2px, -2px);
+}
+[data-mode="genz"] .card-flat:hover {
+  background-color: var(--surface-raised);
+  border-color: var(--color-saffron-500);
+}
+
+/* ── Buttons: a marigold signboard with a black edge; pressing pushes it in ── */
+[data-mode="genz"] .btn-primary,
+[data-mode="genz"] .btn-ghost,
+[data-mode="genz"] .btn-dark {
+  border: 2px solid var(--poster-ink);
+  font-weight: 600;
+  transition:
+    transform 0.12s var(--ease-quick),
+    box-shadow 0.12s var(--ease-quick),
+    background-color 0.12s;
+}
+[data-mode="genz"] .btn-primary {
+  background-color: var(--color-saffron-500);
+  color: var(--color-on-accent);
+  box-shadow: 3px 3px 0 0 var(--poster-ink);
+}
+[data-mode="genz"] .btn-primary:hover {
+  background-color: var(--color-saffron-600);
+  box-shadow: 4px 4px 0 0 var(--color-rani);
+  transform: translate(-1px, -1px);
+}
+[data-mode="genz"] .btn-primary:active,
+[data-mode="genz"] .btn-ghost:active {
+  box-shadow: 0 0 0 0 var(--poster-ink);
+  transform: translate(3px, 3px);
+}
+[data-mode="genz"] .btn-ghost {
+  background-color: var(--color-paper-light);
+  border-color: var(--color-ink-line);
+  box-shadow: 3px 3px 0 0 var(--poster-ink);
+}
+[data-mode="genz"] .btn-ghost:hover {
+  background-color: var(--surface-raised);
+  border-color: var(--color-ink);
+}
+[data-mode="genz"] .btn-dark {
+  background-color: var(--color-ink);
+  color: #13110e;
+  box-shadow: 3px 3px 0 0 var(--color-saffron-500);
+}
+
+/* ── Labels are stickers ── */
+[data-mode="genz"] .sticker {
+  background-color: var(--color-saffron-500);
+  color: var(--color-on-accent);
+  border: 2px solid var(--poster-ink);
+  border-radius: 0.3rem;
+  box-shadow: 2px 2px 0 0 var(--poster-ink);
+  transform: rotate(-2deg);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+[data-mode="genz"] .chip {
+  background-color: var(--color-paper-deep);
+  border: 1.5px solid var(--color-ink-line);
+  color: var(--color-ink-soft);
+}
+[data-mode="genz"] .chip-accent {
+  background-color: var(--color-saffron-500);
+  border-color: var(--poster-ink);
+  color: var(--color-on-accent);
+}
+[data-mode="genz"] .filter-pill {
+  background-color: var(--color-paper-light);
+  border: 1.5px solid var(--color-ink-line);
+}
+[data-mode="genz"] .filter-pill[aria-pressed="true"] {
+  background-color: var(--color-saffron-500);
+  border-color: var(--poster-ink);
+  color: var(--color-on-accent);
+  box-shadow: 2px 2px 0 0 var(--poster-ink);
+}
+[data-mode="genz"] .badge-soft {
+  background-color: var(--color-paper-deep);
+  border: 1.5px solid var(--color-ink-line);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* ── Fields ── */
+[data-mode="genz"] .input,
+[data-mode="genz"] .field-rule {
+  background-color: var(--color-paper-dim);
+  border: 2px solid var(--color-field-line);
+}
+[data-mode="genz"] .input:focus {
+  border-color: var(--color-saffron-500);
+  box-shadow: 3px 3px 0 0 var(--color-saffron-500);
+}
+
+/* ── The navigation island: a solid board, not frosted glass ── */
+[data-mode="genz"] .nav-island {
+  background-color: var(--color-paper-light);
+  border: 2px solid var(--color-ink-line);
+  box-shadow: 4px 4px 0 0 var(--poster-ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-mode="genz"] .nav-link:hover,
+[data-mode="genz"] .nav-icon:hover {
+  background-color: var(--color-paper-deep);
+}
+
+/* Condensed signboard letters read smaller than a grotesque at the same size, so
+   the display sizes step up, and the big lines take the painter's shadow. */
+[data-mode="genz"] .type-hero {
+  font-size: clamp(3.6rem, 2.2rem + 5.4vw, 7.4rem);
+  line-height: 0.86;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+[data-mode="genz"] .type-xl {
+  font-size: clamp(2.9rem, 1.8rem + 4vw, 5.2rem);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+}
+[data-mode="genz"] .type-hero .text-saffron-500,
+[data-mode="genz"] .type-xl .text-saffron-500 {
+  text-shadow: 4px 4px 0 var(--color-rani);
+}
+
+/* Painted boards have squared corners: pills become signs. */
+[data-mode="genz"] {
+  --radius-pill: 0.4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-mode="genz"] .card:hover,
+  [data-mode="genz"] .btn-primary:hover,
+  [data-mode="genz"] .btn-primary:active,
+  [data-mode="genz"] .btn-ghost:active {
+    transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COURSE TICKET — the course card, both registers.
+   Colour says the field at a glance; a dashed tear line separates what the
+   course is from what it takes. See CourseCard in components/Cards.tsx.
+   ═══════════════════════════════════════════════════════════════ */
+.course-ticket {
+  --cat: var(--color-saffron-500);
+  overflow: hidden;
+}
+.course-ticket[data-group="Technology"] {
+  --cat: var(--color-peacock);
+}
+.course-ticket[data-group="Business"],
+.course-ticket[data-group="Competitive Exams"] {
+  --cat: var(--color-rani);
+}
+.course-ticket[data-group="Healthcare"] {
+  --cat: var(--color-emeraldx-500);
+}
+.course-ticket[data-group="Creative Arts"] {
+  --cat: var(--color-indigo);
+}
+.course-ticket-group {
+  color: var(--cat);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.course-ticket-stub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+@media (min-width: 640px) {
+  .course-ticket {
+    border-top: 6px solid var(--cat) !important;
+  }
+  .course-ticket-stub {
+    margin-top: 1rem;
+    border-top: 2px dashed var(--color-ink-line);
+  }
+  .course-ticket > div:last-of-type {
+    display: flex;
+    flex-direction: column;
+  }
+}
+[data-mode="genz"] .course-ticket-title {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+.course-more > summary {
+  list-style: none;
+}
+.course-more > summary::-webkit-details-marker {
+  display: none;
+}
+.course-more > summary::after {
+  content: " +";
+  color: var(--color-saffron-500);
+}
+.course-more[open] > summary::after {
+  content: " \2212";
+}

@@ -1,0 +1,67 @@
+/* Adaptive pace and steady hands (lane B1). Structure only: no colours, so light and dark both work.
+   The runtime sets <html data-steady="on"> and --steady-hit (48px) only while steady hands is in force, and removes
+   both the moment it is switched off, so none of this applies by default.
+
+   Rules are unlayered on purpose and touch only size and spacing, never `position`, so they cannot pull an
+   absolutely placed control out of its place. `.sr-only` controls are always excluded. */
+
+/* Minimum touch target: 48px on anything you press. */
+html[data-steady="on"]
+  :is(
+    button,
+    [role="button"],
+    [role="tab"],
+    [role="menuitem"],
+    [role="switch"],
+    summary,
+    select,
+    input:not([type="hidden"], [type="checkbox"], [type="radio"], [type="range"], [type="file"]),
+    a.btn-primary,
+    a.btn-ghost,
+    nav a
+  ):not(.sr-only) {
+  min-block-size: var(--steady-hit, 48px);
+}
+
+/* Icon-only buttons are the smallest targets, so they get the width as well. */
+html[data-steady="on"] :is(button, [role="button"])[aria-label]:has(> svg:only-child):not(.sr-only) {
+  min-inline-size: var(--steady-hit, 48px);
+}
+
+/* Drawn checkboxes and radios that are real inputs get a larger box. */
+html[data-steady="on"] :is(input[type="checkbox"], input[type="radio"]):not(.sr-only) {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+}
+
+/* A positioned icon button also gets an invisible 8px halo, so a near miss still lands. It moves nothing. */
+html[data-steady="on"]
+  :is(button, [role="button"])[aria-label]:has(> svg:only-child):is(.absolute, .fixed, .sticky, .relative):not(.sr-only)::after {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
+}
+
+/* Room between neighbours: rows of controls never sit closer than 8px. */
+html[data-steady="on"]
+  :is(.flex, .inline-flex, .grid):has(
+    > :is(button, [role="button"], a.btn-primary, a.btn-ghost)
+      + :is(button, [role="button"], a.btn-primary, a.btn-ghost)
+  ) {
+  gap: 0.5rem;
+}
+
+/* Nothing that can only be reached by hovering: reveal-on-hover is shown, and hover-expanding cards stay as the
+   summary they are on a phone (their buttons live on the detail page). */
+html[data-steady="on"] [class*="group-hover:opacity-100"],
+html[data-steady="on"] [data-hover-reveal] {
+  opacity: 1;
+  visibility: visible;
+}
+@media (hover: hover) {
+  html[data-steady="on"] .card-reveal .hover-panel {
+    display: none;
+  }
+}
+
+/* The confirm dialog never animates, so reduced motion needs nothing here. Its buttons are 48px by class. */

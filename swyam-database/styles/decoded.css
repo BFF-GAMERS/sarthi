@@ -1,0 +1,203 @@
+/* Listing decoded (lane A2). Owned by ListingDecoded.tsx.
+ *
+ * Colours come from the existing tokens so light, dark and the theme modes all
+ * follow on their own. Nothing here animates, so reduced motion needs no special
+ * case beyond the chevron, which turns without a transition. */
+
+.decoded {
+  --decoded-line: var(--color-ink-line);
+  --decoded-ground: var(--color-paper-dim);
+  --decoded-accent: var(--color-saffron-500);
+  --decoded-text: var(--color-ink);
+  --decoded-soft: var(--color-ink-soft);
+  --decoded-mute: var(--color-ink-mute);
+  color: var(--decoded-text);
+}
+
+/* Keyboard focus on every control this block owns. */
+.decoded .decoded-toggle:focus-visible,
+.decoded summary:focus-visible {
+  outline: 2px solid var(--decoded-accent);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* The host card lays a whole-card link overlay (after:absolute inset-0) over
+ * itself, so anything clickable in here must sit above it. */
+.decoded-card .decoded-toggle,
+.decoded-card summary {
+  position: relative;
+  z-index: 10;
+}
+
+.decoded summary {
+  list-style: none;
+  cursor: pointer;
+}
+.decoded summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ── shared pieces ─────────────────────────────────────────────────────── */
+
+.decoded-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--decoded-mute);
+}
+
+.decoded-text {
+  color: var(--decoded-text);
+}
+
+.decoded-note-missing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--decoded-mute);
+  font-style: italic;
+}
+.decoded-note-missing strong {
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ── detail: every bullet, each with its source quote ──────────────────── */
+
+.decoded-item {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  column-gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--decoded-line);
+}
+.decoded-item:first-child {
+  border-top: 0;
+}
+.decoded-item[data-missing="true"] .decoded-text {
+  color: var(--decoded-mute);
+}
+
+.decoded-quote {
+  margin: 0.55rem 0 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--decoded-accent);
+  background: var(--decoded-ground);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.decoded-quote figcaption {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--decoded-mute);
+}
+.decoded-quote blockquote {
+  margin: 0.15rem 0 0;
+  color: var(--decoded-soft);
+  overflow-wrap: anywhere;
+}
+
+/* ── card: compact, collapsed behind a toggle on phones ────────────────── */
+
+.decoded-card {
+  border-top: 1px solid var(--decoded-line);
+  padding-top: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.decoded-toggle {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.25rem;
+  background: transparent;
+  border: 0;
+  color: var(--decoded-text);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.decoded-toggle .decoded-chev {
+  flex: none;
+  color: var(--decoded-mute);
+}
+.decoded-toggle[aria-expanded="true"] .decoded-chev {
+  transform: rotate(180deg);
+}
+
+.decoded-title {
+  display: none;
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+  color: var(--decoded-text);
+}
+
+.decoded-card:not([data-open="true"]) .decoded-body {
+  display: none;
+}
+
+.decoded-card-list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.decoded-card-list li {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr;
+  column-gap: 0.4rem;
+}
+.decoded-card-list li[data-missing="true"] {
+  color: var(--decoded-mute);
+}
+
+.decoded-src {
+  margin-top: 0.15rem;
+}
+.decoded-src summary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.25rem;
+  font-weight: 600;
+  color: var(--decoded-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.decoded-src ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 0.25rem;
+  padding: 0.5rem 0.75rem;
+  list-style: none;
+  border-left: 3px solid var(--decoded-accent);
+  background: var(--decoded-ground);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--decoded-soft);
+  overflow-wrap: anywhere;
+}
+.decoded-src ul b {
+  color: var(--decoded-mute);
+  font-weight: 600;
+}
+
+/* Open by default from 640 px: the toggle gives way to a plain heading. */
+@media (min-width: 640px) {
+  .decoded-card .decoded-toggle {
+    display: none;
+  }
+  .decoded-card .decoded-title {
+    display: block;
+  }
+  .decoded-card:not([data-open="true"]) .decoded-body {
+    display: block;
+  }
+}

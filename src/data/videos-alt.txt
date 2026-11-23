@@ -1,0 +1,16 @@
+c10-math-01,s7Y976auPwE,1792,145,Physics Wallah Foundation
+c10-math-01,rhzL1uQ5rDk,117,111,Science and Fun Education
+c10-math-03,9VBe_-9cHso,167,84,Science and Fun Education
+c10-math-03,sPDHpmM09BM,100,16,Physics Wallah Foundation
+c10-math-06,1QomffH_B_w,412,101,Science and Fun Education
+c10-math-07,9Us5-Q0V_C4,1767,108,Physics Wallah Foundation
+c10-math-07,MGj4LumxENc,211,84,Science and Fun Education
+c10-math-08,Oot7sRggai8,308,64,Exphub 9th &10th
+c10-math-09,MdshretKGDQ,159,75,Science and Fun Education
+c10-math-10,pzvQQNs2qEk,260,107,Science and Fun Education
+c10-math-10,bEaYeg95YHU,184,31,Educational Bhaiya
+c10-math-11,qV-UkkusGWc,402,14,Science and Fun Education
+c10-math-12,Bat0RRWD2cM,1228,191,Physics Wallah Foundation
+c10-math-12,CtXXnSO94SY,106,88,Exphub 9th &10th
+c10-math-14,CFjBkPjn4jE,1063,128,Physics Wallah Foundation
+c10-math-14,OE9TXeMCqKs,243,18,Educational Bhaiya
